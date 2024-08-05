@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sgc-dagster"
+version = "0.0.1"
+authors = [
+  { name="Patrik Keller", email="patrik.keller@konstanz.de" }
+]
+description = ""
+readme = "README.md"
+requires-python = ">=3.12"
+classifiers = [
+    "Programming Language :: Python :: 3"
+]
+dependencies = [
+    "dagster",
+    "httpx",
+    "pandas"
+]
+
+[project.urls]
+Homepage = "https://github.com/sgc-kn/sgc-dagster"
+Issues = "https://github.com/sgc-kn/sgc-dagster/issues"
+
+[tool.dagster]
+module_name = "sgc_dagster.definitions"
+code_location_name = "sgc_dagster"
+
+[tool.setuptools]
+packages = []
