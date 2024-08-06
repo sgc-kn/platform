@@ -47,29 +47,3 @@ def hackernews_top_stories(config: HNStoriesConfig) -> MaterializeResult:
             "preview": MetadataValue.md(str(df[["title", "by", "url"]].to_markdown())),
         }
     )
-
-import httpx
-from . import secrets
-import datetime
-
-lubw_url = "https://mersyzentrale.de/www/Datenweitergabe/Konstanz/data.php"
-
-@asset
-def lubw_recent_o3():
-    auth = httpx.DigestAuth(
-            username=secrets.get('lubw', 'username'),
-            password=secrets.get('lubw', 'password'),
-            )
-    client = httpx.Client(auth=auth)
-    now = datetime.datetime.now()
-    yesterday = now - datetime.timedelta(days=1)
-    response = client.get(
-            lubw_url,
-            params=dict(
-                komponente="O3",
-                von=yesterday.isoformat(timespec='seconds'),
-                bis=now.isoformat(timespec='seconds'),
-                ),
-            headers=dict(Accept="application/json")
-            )
-    return response.json()
