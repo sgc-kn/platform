@@ -32,7 +32,7 @@ class Client():
             'POST',
             f'https://apim.{udp_domain}/gateway/quantumleap/v2/notify',
             headers = {
-                'Authorization' : f"Bearer {get_token()}",
+                'Authorization' : f"Bearer {self.get_token()}",
                 'Fiware-Service' : self._service,
                 'Fiware-ServicePath' : '/',
                 'Fiware-TimeIndex-Attribute' : time_index,
@@ -45,11 +45,10 @@ class Client():
         return r
 
     def post_entity_updates(self, lst, *args, **kwargs):
-        print(f"Upload {len(lst)} entity updates to UDP ...")
         batch_size = 256
         if len(lst) <= batch_size:
-            _post_entity_update_batch(lst, *args, **kwargs)
+            self._post_entity_update_batch(lst, *args, **kwargs)
         else:
             for i in range(0, len(lst), batch_size):
                 batch = lst[i:i+batch_size]
-                _post_entity_update_batch(batch, *args, **kwargs)
+                self._post_entity_update_batch(batch, *args, **kwargs)
