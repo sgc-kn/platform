@@ -1,14 +1,5 @@
-from dagster import Definitions, FilesystemIOManager, load_assets_from_modules
+import dagster
 
-from . import assets
-from . import lubw
+from .sources.lubw.dagster import job as lubw_job
 
-all_assets = load_assets_from_modules([assets])
-
-defs = Definitions(
-        assets=all_assets,
-        jobs=[lubw.lubw],
-        resources={
-            "fs_io_manager": FilesystemIOManager(),
-            },
-        )
+defs = dagster.Definitions( jobs=[ lubw_job ] )

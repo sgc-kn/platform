@@ -29,4 +29,4 @@ module_name = "sgc_dagster.definitions"
 code_location_name = "sgc_dagster"
 
 [tool.setuptools]
-packages = []
+packages = [ "sgc_dagster" ]

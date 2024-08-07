@@ -3,3 +3,4 @@ data
 secrets/identity
 tmp*
 venv
+*.ipynb_checkpoints

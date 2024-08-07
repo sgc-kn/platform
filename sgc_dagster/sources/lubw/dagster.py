@@ -1,7 +1,8 @@
-from . import secrets
+from . import lib
+from ... import secrets
+from ... import quantumleap
 import dagster
 import datetime
-import httpx
 import urllib
 import re
 
@@ -162,8 +163,8 @@ def upload(context, observations):
 def concat(a, b, c ,d):
     return a + b + c + d
 
-@dagster.job
-def lubw():
+@dagster.job(name="lubw_sync")
+def job():
     avon = von()
     abis = bis()
 
