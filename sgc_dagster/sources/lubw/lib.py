@@ -1,6 +1,8 @@
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
+import dateutil.parser
 import httpx
+import urllib
 
 lubw_url = "https://mersyzentrale.de/www/Datenweitergabe/Konstanz/data.php"
 lubw_start_date = datetime(1990, 9, 4, 0, 0)
@@ -14,6 +16,8 @@ o3 = Component('o3', 'O3')
 no2 = Component('no2', 'NO2')
 pm10 = Component('pm10', 'PM10')
 pm25 = Component('pm25', 'PM2,5')
+
+components = [o3, no2, pm10, pm25]
 
 class Client():
     def __init__(self, *args, username: str, password: str):
@@ -39,3 +43,42 @@ class Client():
     def get(self, *args, **kwargs):
         p = self.params(*args, **kwargs)
         return self.get_with_params(p)
+
+def params_of_nextLink(lnk):
+    parsed = urllib.parse.urlparse(lnk)
+    return { k : v for k, v in urllib.parse.parse_qsl(parsed.query) }
+
+def start_end_of_params(params):
+    start = dateutil.parser.isoparse(params['von'])
+    end = dateutil.parser.isoparse(params['bis'])
+    return start, end
+
+def start_end_of_nextLink(lnk):
+    return start_end_of_params(params_of_nextLink(lnk))
+
+def raw_entity_id(component):
+    return f"urn:raw:lubw:konstanz:{component.name}"
+
+def entity_updates_gen(component, lubw_json):
+    raw_id = raw_entity_id(component)
+    now = datetime.now(timezone.utc).isoformat()
+    for mw in sorted(lubw_json['messwerte'], key = lambda x: x['startZeit']):
+        if mw['wert'] is None:
+            continue
+        else:
+            yield dict(
+                id = raw_id,
+                type = "raw_lubw",
+                time_index = dict(value = mw['startZeit']),
+                date_processed = dict(value = now),
+                startZeit = dict(value = mw['startZeit']),
+                endZeit = dict(value = mw['endZeit']),
+                wert = dict(value = mw['wert']),
+                station = dict(value = lubw_json['station'],
+                                  type="TextUnrestricted"),
+                komponente = dict(value = lubw_json['komponente'],
+                                  type="TextUnrestricted"),
+            )
+
+def entity_updates(*args):
+    return list(entity_updates_gen(*args))
