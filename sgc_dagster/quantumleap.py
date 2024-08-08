@@ -4,13 +4,13 @@ import httpx
 udp_domain = "udp-kn.de"
 udp_realm = "konstanz"
 
-fiware_service = "nodered3"
+HTTPStatusError = httpx.HTTPStatusError
 
 class Client():
     def __init__(self, fiware_service: str):
         self._service = fiware_service
 
-    def get_token(self):
+    def get_token(self, scope="read"):
         r = httpx.request(
             'POST',
             f'https://idm.{udp_domain}/auth/realms/{udp_realm}/protocol/openid-connect/token',
@@ -20,11 +20,34 @@ class Client():
                 grant_type = 'password',
                 username=secrets.get('udp', 'username'),
                 password=secrets.get('udp', 'password'),
-                scope = "api:read api:write api:delete",
+                scope = f"api:{scope}",
             )
         )
         r.raise_for_status()
         return r.json()['access_token']
+
+    def get_entity(self, entity_id):
+        r = httpx.request(
+            'GET',
+            f'https://apim.{udp_domain}/gateway/quantumleap/v2/entities/{entity_id}',
+            params = { 'lastN': 1 },
+            headers = {
+                'Authorization' : f"Bearer {self.get_token("read")}",
+                'Fiware-Service' : self._service,
+                'Fiware-ServicePath' : '/',
+            },
+        )
+        r.raise_for_status()
+
+        # simplify json w.r.t. lastN=1
+        o = r.json()
+        for a in o.pop('attributes', []):
+            o[a['attrName']] = a['values'][0]
+
+        # the database column is called time_index
+        o['time_index'] = o.pop('index', [None])[0]
+
+        return o
 
     def _post_entity_update_batch(self, lst, *args, time_index = "time_index"):
         assert len(lst) <= 256
@@ -32,7 +55,7 @@ class Client():
             'POST',
             f'https://apim.{udp_domain}/gateway/quantumleap/v2/notify',
             headers = {
-                'Authorization' : f"Bearer {self.get_token()}",
+                'Authorization' : f"Bearer {self.get_token("write")}",
                 'Fiware-Service' : self._service,
                 'Fiware-ServicePath' : '/',
                 'Fiware-TimeIndex-Attribute' : time_index,
