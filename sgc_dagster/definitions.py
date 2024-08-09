@@ -1,5 +1,5 @@
-import dagster
+from .registry import registry
 
-from .sources.lubw.dagster import job as lubw_job
+from .sources.lubw import dagster
 
-defs = dagster.Definitions( jobs=[ lubw_job ] )
+defs = registry.definitions()

@@ -1,9 +1,11 @@
 from . import lib
 from ... import secrets
 from ... import quantumleap
+from ...registry import register
 from dagster import graph, job, op
 from dagster import DynamicOut, DynamicOutput
 from dagster import RetryPolicy, Jitter, Backoff
+from dagster import ScheduleDefinition, DefaultScheduleStatus
 from datetime import datetime, timedelta, timezone
 import dateutil
 
@@ -34,7 +36,7 @@ def start_time(context, component: lib.Component) -> tuple[lib.Component, dateti
     return (component, start)
 
 @op( out = DynamicOut(tuple[lib.Component, datetime, datetime]) )
-def batches( states: list[tuple[lib.Component, datetime]] ):
+def batches(context, states: list[tuple[lib.Component, datetime]] ):
     # lubw returns at most 100 measurements per request
     # we're requesting hourly data
     n = 0
@@ -52,7 +54,7 @@ def batches( states: list[tuple[lib.Component, datetime]] ):
             b_end += step
             n += 1
 
-    context.log.into(f"{n} batches")
+    context.log.info(f"{n} batches")
 
 # -- SQL for checking batches w.r.t overlap and gaps:
 # -- Attention: the source seems to be incomplete on its own.
@@ -95,3 +97,11 @@ def sync(context, batch: tuple[lib.Component, datetime, datetime]) -> None:
 @job(name = "lubw_sync")
 def job():
     batches(components().map(start_time).collect()).map(sync)
+
+schedule = ScheduleDefinition(
+    job=job,
+    cron_schedule="29 */4 * * *", # every 4 hours
+    default_status=DefaultScheduleStatus.RUNNING,
+)
+
+register(jobs = [job], schedules = [schedule])
