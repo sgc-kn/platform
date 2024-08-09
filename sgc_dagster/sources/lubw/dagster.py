@@ -3,7 +3,8 @@ from ... import secrets
 from ... import quantumleap
 from dagster import graph, job, op
 from dagster import DynamicOut, DynamicOutput
-from datetime import datetime, timezone
+from dagster import RetryPolicy, Jitter, Backoff
+from datetime import datetime, timedelta, timezone
 import dateutil
 
 service = "nodered3"
@@ -14,24 +15,49 @@ def components():
         yield DynamicOutput(c, mapping_key=c.name)
 
 @op
-def start_time(context, component: lib.Component) -> datetime:
+def last_start(context, component: lib.Component) -> tuple[lib.Component, datetime]:
     # this should probably be a dagster resource?
     ql = quantumleap.Client(service)
 
     eid = lib.raw_entity_id(component)
     try:
         o = ql.get_entity(eid)
-        start = dateutil.parser.isoparse(o['endZeit'])
+        start = dateutil.parser.isoparse(o['startZeit'])
     except quantumleap.HTTPStatusError as e:
-        start = datetime(1990, 1, 1, 0, 0)
+        start = datetime(1990, 1, 1, 0, 0, tzinfo=timezone.utc)
+        start = datetime(2023, 1, 1, 0, 0, tzinfo=timezone.utc)
+        # start = datetime(2024, 1, 1, 0, 0, tzinfo=timezone.utc)
 
-    context.log.info(f"{start}")
+    context.log.info(f"last start: {start}")
 
-    return start
+    return (component, start)
 
-@op(out = DynamicOut() )
-def get(component, start):
-    end = datetime.now()
+@op( out = DynamicOut(tuple[lib.Component, datetime, datetime]) )
+def batches( states: list[tuple[lib.Component, datetime]] ):
+    # lubw returns at most 100 measurements per request
+    # we're requesting hourly data
+    for component, start in states:
+        end = datetime.now(timezone.utc)
+        step = timedelta(hours = 100)
+        b_start = start
+        b_end = b_start + step - timedelta(seconds = 1)
+        while b_start < end:
+            c_key = component.name
+            d_key = b_start.astimezone(timezone.utc).strftime("%Y%m%d_%H%M%S")
+            batch = (component, b_start, min(end, b_end))
+            yield DynamicOutput(batch, mapping_key=f"{c_key}_{d_key}")
+            b_start += step
+            b_end += step
+
+
+@op(retry_policy = RetryPolicy(
+    max_retries = 7,
+    delay = 2,
+    backoff = Backoff.EXPONENTIAL,
+    jitter = Jitter.FULL,
+    ))
+def sync(batch: tuple[lib.Component, datetime, datetime]) -> None:
+    component, start, end = batch
 
     # this should probably be a dagster resource?
     lubw = lib.Client(
@@ -39,37 +65,18 @@ def get(component, start):
             password = secrets.get('lubw', 'password')
             )
 
-    def key(dt):
-        return dt.astimezone(timezone.utc).strftime("%Y%m%d_%H%M%S")
-
     data = lubw.get(component, start, end)
-    yield DynamicOutput(data, mapping_key=key(start))
 
-    while 'nextLink' in data:
-        start, _ = lib.start_end_of_nextLink(data['nextLink'])
-        data = lubw.get(component, start, end)
-        yield DynamicOutput(data, mapping_key=key(start))
+    assert 'nextLink' not in data, "excessive batch size"
 
-@op
-def build_entity_updates(component, lubw_json):
-    return lib.entity_updates(component, lubw_json)
+    entity_updates = lib.entity_updates(component, data)
 
-@op
-def post(entity_updates):
-    # this should probably be a dagster resource?
-    ql = quantumleap.Client(service)
+    if len(entity_updates) > 0:
+        # this should probably be a dagster resource?
+        ql = quantumleap.Client(service)
 
-    n = len(entity_updates)
-    if n > 0:
         ql.post_entity_updates(entity_updates)
 
-@graph
-def sync(component):
-    ( get(component, start_time(component))
-     .map(lambda x: build_entity_updates(component, x))
-     .map(post)
-    )
-
-@job
+@job(name = "lubw_sync")
 def job():
-    components().map(sync)
+    batches(components().map(last_start).collect()).map(sync)
