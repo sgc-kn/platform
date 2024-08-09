@@ -36,7 +36,7 @@ class Client():
                 lubw_url,
                 params = params,
                 headers=dict(Accept="application/json"),
-                timeout=60 # default 5s was too small
+                timeout=30 # default 5s was too small
                 )
         r.raise_for_status()
         return r.json()

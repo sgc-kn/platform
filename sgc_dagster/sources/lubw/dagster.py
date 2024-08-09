@@ -15,20 +15,21 @@ def components():
         yield DynamicOutput(c, mapping_key=c.name)
 
 @op
-def last_start(context, component: lib.Component) -> tuple[lib.Component, datetime]:
+def start_time(context, component: lib.Component) -> tuple[lib.Component, datetime]:
     # this should probably be a dagster resource?
     ql = quantumleap.Client(service)
 
     eid = lib.raw_entity_id(component)
     try:
         o = ql.get_entity(eid)
-        start = dateutil.parser.isoparse(o['startZeit'])
+        latest = dateutil.parser.isoparse(o['endZeit'])
+        context.log.info(f"last endZeit: {latest}")
+        start = latest + timedelta(seconds = 1)
+
     except quantumleap.HTTPStatusError as e:
         start = datetime(1990, 1, 1, 0, 0, tzinfo=timezone.utc)
         start = datetime(2023, 1, 1, 0, 0, tzinfo=timezone.utc)
-        # start = datetime(2024, 1, 1, 0, 0, tzinfo=timezone.utc)
-
-    context.log.info(f"last start: {start}")
+        context.log.info(f"entity not found; start from scratch: {start}")
 
     return (component, start)
 
@@ -36,11 +37,12 @@ def last_start(context, component: lib.Component) -> tuple[lib.Component, dateti
 def batches( states: list[tuple[lib.Component, datetime]] ):
     # lubw returns at most 100 measurements per request
     # we're requesting hourly data
+    n = 0
     for component, start in states:
         end = datetime.now(timezone.utc)
         step = timedelta(hours = 100)
         b_start = start
-        b_end = b_start + step - timedelta(seconds = 1)
+        b_end = b_start + step
         while b_start < end:
             c_key = component.name
             d_key = b_start.astimezone(timezone.utc).strftime("%Y%m%d_%H%M%S")
@@ -48,7 +50,16 @@ def batches( states: list[tuple[lib.Component, datetime]] ):
             yield DynamicOutput(batch, mapping_key=f"{c_key}_{d_key}")
             b_start += step
             b_end += step
+            n += 1
 
+    context.log.into(f"{n} batches")
+
+# -- SQL for checking batches w.r.t overlap and gaps:
+# -- Attention: the source seems to be incomplete on its own.
+# SELECT date_processed, MIN(time_index) as min, MAX(time_index), COUNT(*)
+# FROM mtnodered3.etraw_lubw
+# WHERE entity_id LIKE '%:o3'
+# GROUP BY date_processed ORDER BY min ASC;
 
 @op(retry_policy = RetryPolicy(
     max_retries = 7,
@@ -56,7 +67,7 @@ def batches( states: list[tuple[lib.Component, datetime]] ):
     backoff = Backoff.EXPONENTIAL,
     jitter = Jitter.FULL,
     ))
-def sync(batch: tuple[lib.Component, datetime, datetime]) -> None:
+def sync(context, batch: tuple[lib.Component, datetime, datetime]) -> None:
     component, start, end = batch
 
     # this should probably be a dagster resource?
@@ -71,12 +82,16 @@ def sync(batch: tuple[lib.Component, datetime, datetime]) -> None:
 
     entity_updates = lib.entity_updates(component, data)
 
-    if len(entity_updates) > 0:
+    n = len(entity_updates)
+    if n > 0:
         # this should probably be a dagster resource?
         ql = quantumleap.Client(service)
 
+        context.log.info(f"post {n} entity updates to QL")
         ql.post_entity_updates(entity_updates)
+    else:
+        context.log.info("no entity updates; skip QL post")
 
 @job(name = "lubw_sync")
 def job():
-    batches(components().map(last_start).collect()).map(sync)
+    batches(components().map(start_time).collect()).map(sync)
