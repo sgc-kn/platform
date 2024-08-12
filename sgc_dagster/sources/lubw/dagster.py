@@ -29,8 +29,7 @@ def start_time(context, component: lib.Component) -> tuple[lib.Component, dateti
         start = latest + timedelta(seconds = 1)
 
     except quantumleap.HTTPStatusError as e:
-        start = datetime(1990, 1, 1, 0, 0, tzinfo=timezone.utc)
-        start = datetime(2023, 1, 1, 0, 0, tzinfo=timezone.utc)
+        start = datetime(2008, 1, 1, 0, 0, tzinfo=timezone.utc)
         context.log.info(f"entity not found; start from scratch: {start}")
 
     return (component, start)
@@ -94,7 +93,17 @@ def sync(context, batch: tuple[lib.Component, datetime, datetime]) -> None:
     else:
         context.log.info("no entity updates; skip QL post")
 
-@job(name = "lubw_sync")
+job_config={
+        "execution": {
+            "config": {
+                "multiprocess": {
+                    "max_concurrent": 4,
+                    }
+                }
+            }
+        }
+
+@job(name = "lubw_sync", config = job_config)
 def job():
     batches(components().map(start_time).collect()).map(sync)
 

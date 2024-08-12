@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 import dateutil.parser
 import httpx
+import pandas
 import urllib
 
 lubw_url = "https://mersyzentrale.de/www/Datenweitergabe/Konstanz/data.php"
@@ -83,3 +84,23 @@ def entity_updates_gen(component, lubw_json):
 
 def entity_updates(*args):
     return list(entity_updates_gen(*args))
+
+def row_gen(component, lubw_json):
+    for mw in sorted(lubw_json['messwerte'], key = lambda x: x['startZeit']):
+        if mw['wert'] is None:
+            continue
+        else:
+            yield dict(
+                station = lubw_json['station'],
+                startZeit = mw['startZeit'],
+                endZeit = mw['endZeit'],
+                component = component.name,
+                component_human = lubw_json['komponente'],
+                wert = mw['wert'],
+            )
+
+def dataframe(*args):
+    df = pandas.DataFrame(row_gen(*args))
+    df = df.assign(startZeit = pandas.to_datetime(df.startZeit, utc=True))
+    df = df.assign(endZeit = pandas.to_datetime(df.endZeit, utc=True))
+    return df
