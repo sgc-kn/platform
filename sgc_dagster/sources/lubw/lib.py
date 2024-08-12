@@ -71,7 +71,7 @@ def entity_updates_gen(component, lubw_json):
                 id = raw_id,
                 type = "raw_lubw",
                 time_index = dict(value = mw['startZeit']),
-                date_processed = dict(value = now),
+                dateProcessed = dict(value = now),
                 startZeit = dict(value = mw['startZeit']),
                 endZeit = dict(value = mw['endZeit']),
                 wert = dict(value = mw['wert']),
