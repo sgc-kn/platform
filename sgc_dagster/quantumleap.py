@@ -1,5 +1,6 @@
 from . import secrets
 import httpx
+import tqdm
 
 udp_domain = "udp-kn.de"
 udp_realm = "konstanz"
@@ -67,11 +68,13 @@ class Client():
         r.raise_for_status()
         return r
 
-    def post_entity_updates(self, lst, *args, **kwargs):
+    def post_entity_updates(self, lst, *args, progress=False, **kwargs):
         batch_size = 256
         if len(lst) <= batch_size:
             self._post_entity_update_batch(lst, *args, **kwargs)
         else:
-            for i in range(0, len(lst), batch_size):
+            batches = range(0, len(lst), batch_size)
+            with_progress = tqdm.tqdm(batches) if progress else batches
+            for i in with_progress:
                 batch = lst[i:i+batch_size]
                 self._post_entity_update_batch(batch, *args, **kwargs)
