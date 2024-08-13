@@ -13,11 +13,11 @@ from typing import Any
 import pandas
 import os
 
-service = "nodered3"
-
 partition = MonthlyPartitionsDefinition(
         start_date="2008-01-01",
-        timezone='Etc/UCT')
+        timezone='Etc/UCT',
+        end_offset=1, # include running month
+        )
 
 scope = 'slh' # sources/lubw/historic
 
@@ -76,47 +76,6 @@ def get(context, batch: tuple[lib.Component, datetime, datetime]):
 
     return (component, data)
 
-@op(name = "build_entity_updates_" + scope)
-def build_entity_updates(context, get_result: tuple[lib.Component, Any]) -> list[Any]:
-    component, data = get_result
-    lst = lib.entity_updates(component, data)
-    context.log.info(f'{len(lst)} entity updates')
-    return lst
-
-@op(name = 'concat_' + scope)
-def concat(context, list_of_lists: list[list[Any]]) -> list[Any]:
-    context.log.info(f'{len(list_of_lists)} lists')
-
-    acc = sum(list_of_lists, [])
-    context.log.info(f'concatenated length: {len(acc)} entity updates')
-
-    return acc
-
-@op(name = "post_" + scope)
-def post(context, entity_updates) -> None:
-    n = len(entity_updates)
-    if n > 0:
-        # this should probably be a dagster resource?
-        ql = quantumleap.Client(service)
-
-        context.log.info(f"post {n} entity updates to QL")
-        ql.post_entity_updates(entity_updates)
-    else:
-        context.log.info("no entity updates; skip QL post")
-
-    return
-
-@graph_asset(
-        name = 'sources_lubw_historic_sync',
-        partitions_def=partition
-        )
-def sync_asset():
-    entity_updates = concat(batches()
-                            .map(get)
-                            .map(build_entity_updates)
-                            .collect())
-    return post(entity_updates)
-
 @op
 def dataframe(context, batched_data) -> pandas.DataFrame:
     dfs = [ lib.dataframe(c, d) for c, d in batched_data if len(d['messwerte']) > 0 ]
@@ -133,13 +92,12 @@ def save(context, df: pandas.DataFrame) -> None:
     os.makedirs(dname, exist_ok=True)
     df.to_csv(fname, index=False)
 
-
 @graph_asset(
-        name = 'sources_lubw_historic_local',
+        name = 'sources_lubw_monthly',
         partitions_def=partition
         )
-def local_asset():
+def asset():
     df = dataframe(batches().map(get).collect())
     return save(df)
 
-register(assets = [local_asset, sync_asset])
+register(assets = [asset])

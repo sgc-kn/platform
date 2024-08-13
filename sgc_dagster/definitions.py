@@ -1,6 +1,6 @@
 from .registry import registry
 
-from .sources.lubw import dagster
-from .sources.lubw import dagster_historic
+from .sources.lubw import incremental_sync_job
+from .sources.lubw import monthly_asset
 
 defs = registry.definitions()

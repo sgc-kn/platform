@@ -29,8 +29,9 @@ def start_time(context, component: lib.Component) -> tuple[lib.Component, dateti
         start = latest + timedelta(seconds = 1)
 
     except quantumleap.HTTPStatusError as e:
-        start = datetime(2008, 1, 1, 0, 0, tzinfo=timezone.utc)
-        context.log.info(f"entity not found; start from scratch: {start}")
+        raise RuntimeError(
+                "entity not found; this job is suited for initial long-term sync"
+                )
 
     return (component, start)
 
@@ -39,8 +40,8 @@ def batches(context, states: list[tuple[lib.Component, datetime]] ):
     # lubw returns at most 100 measurements per request
     # we're requesting hourly data
     n = 0
+    end = datetime.now(timezone.utc)
     for component, start in states:
-        end = datetime.now(timezone.utc)
         step = timedelta(hours = 100)
         b_start = start
         b_end = b_start + step
@@ -93,24 +94,14 @@ def sync(context, batch: tuple[lib.Component, datetime, datetime]) -> None:
     else:
         context.log.info("no entity updates; skip QL post")
 
-job_config={
-        "execution": {
-            "config": {
-                "multiprocess": {
-                    "max_concurrent": 4,
-                    }
-                }
-            }
-        }
-
-@job(name = "lubw_sync", config = job_config)
+@job(name = "lubw_sync")
 def job():
     batches(components().map(start_time).collect()).map(sync)
 
 schedule = ScheduleDefinition(
     job=job,
     cron_schedule="29 */4 * * *", # every 4 hours
-    default_status=DefaultScheduleStatus.RUNNING,
+    #  default_status=DefaultScheduleStatus.RUNNING,
 )
 
 register(jobs = [job], schedules = [schedule])
