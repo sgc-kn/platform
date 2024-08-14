@@ -30,7 +30,12 @@ def start_time(context, component: lib.Component) -> tuple[lib.Component, dateti
 
     except quantumleap.HTTPStatusError as e:
         raise RuntimeError(
-                "entity not found; this job is suited for initial long-term sync"
+                "entity not found; this job is suited for historic syncs"
+                )
+
+    if datetime.now(timezone.utc) - start > timedelta(days = 90):
+        raise RuntimeError(
+                "long sync span; this job is not suited for long-term syncs"
                 )
 
     return (component, start)
