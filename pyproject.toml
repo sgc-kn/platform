@@ -16,6 +16,7 @@ classifiers = [
 ]
 dependencies = [
     "dagster",
+    "dagster-webserver",
     "httpx",
     "pandas",
 ]
