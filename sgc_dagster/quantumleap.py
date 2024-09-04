@@ -50,9 +50,13 @@ class Client():
 
         return o
 
-    def _post_entity_update_batch(self, lst, *args, time_index = "time_index"):
+    def _post_entity_update_batch(self, lst, *args, time_index = "time_index", retries=1):
         assert len(lst) <= 256
-        r = httpx.request(
+        c = httpx.Client(
+                transport = httpx.HTTPTransport(
+                    retries = retries
+                    ))
+        r = c.request(
             'POST',
             f'https://apim.{udp_domain}/gateway/quantumleap/v2/notify',
             headers = {
@@ -68,8 +72,7 @@ class Client():
         r.raise_for_status()
         return r
 
-    def post_entity_updates(self, lst, *args, progress=False, **kwargs):
-        batch_size = 256
+    def post_entity_updates(self, lst, *args, progress=False, batch_size=256, **kwargs):
         if len(lst) <= batch_size:
             self._post_entity_update_batch(lst, *args, **kwargs)
         else:
