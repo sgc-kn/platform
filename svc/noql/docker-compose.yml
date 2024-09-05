@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: registry.hub.docker.com/timescale/timescaledb:latest-pg16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: noql
+      POSTGRES_DB: noql
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./setup.sql:/docker-entrypoint-initdb.d/setup.sql:z
+
+  postgrest:
+    image: registry.hub.docker.com/postgrest/postgrest:latest
+    environment:
+      PGRST_DB_URI: "postgres://postgres:noql@postgres:5432/noql"
+      PGRST_DB_SCHEMA: "postgrest"
+      PGRST_DB_ANON_ROLE: "postgres"
+      PGRST_DB_EXTRA_SEARCH_PATH: public
+    ports:
+      - "3000:3000"
+    depends_on:
+      - postgres
+
+  swagger:
+    image: registry.hub.docker.com/swaggerapi/swagger-ui
+    environment:
+      - SWAGGER_JSON_URL=/api/
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgrest
+
+  caddy:
+    image: registry.hub.docker.com/library/caddy:latest
+    ports:
+      - "8000:80"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:z
+    depends_on:
+      - postgrest
+      - swagger
+
+volumes:
+  # No named volumes, ephemeral volumes are used for Postgres storage

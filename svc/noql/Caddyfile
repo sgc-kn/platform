@@ -1,0 +1,17 @@
+{
+    # Global options block
+    # Optional: custom Caddy configuration
+}
+
+:80 {
+    # Reverse proxy for Swagger UI
+    route /* {
+        reverse_proxy swagger:8080
+    }
+
+    # Reverse proxy for PostgREST API
+    route /api/* {
+        uri strip_prefix /api
+        reverse_proxy postgrest:3000
+    }
+}
