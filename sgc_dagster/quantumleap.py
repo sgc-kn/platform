@@ -1,5 +1,6 @@
 from . import secrets
 import httpx
+import time
 import tqdm
 
 udp_domain = "udp-kn.de"
@@ -50,13 +51,9 @@ class Client():
 
         return o
 
-    def _post_entity_update_batch(self, lst, *args, time_index = "time_index", retries=1):
+    def _post_entity_update_batch(self, lst, *args, time_index = "time_index"):
         assert len(lst) <= 256
-        c = httpx.Client(
-                transport = httpx.HTTPTransport(
-                    retries = retries
-                    ))
-        r = c.request(
+        r = httpx.request(
             'POST',
             f'https://apim.{udp_domain}/gateway/quantumleap/v2/notify',
             headers = {
@@ -72,6 +69,16 @@ class Client():
         r.raise_for_status()
         return r
 
+    def exponential_backoff(self, fn, *args, retries=0, **kwargs):
+        for i in range(retries):
+            try:
+                return fn(*args, **kwargs)
+            except httpx.HTTPError as e:
+                d = 2 ** i
+                print(f"Wait {d} seconds after HTTP error:",  e)
+                time.sleep(d)
+        return fn(*args, **kwargs)
+
     def post_entity_updates(self, lst, *args, progress=False, batch_size=256, **kwargs):
         if len(lst) <= batch_size:
             self._post_entity_update_batch(lst, *args, **kwargs)
@@ -80,4 +87,4 @@ class Client():
             with_progress = tqdm.tqdm(batches) if progress else batches
             for i in with_progress:
                 batch = lst[i:i+batch_size]
-                self._post_entity_update_batch(batch, *args, **kwargs)
+                self.exponential_backoff(self._post_entity_update_batch, batch, *args, **kwargs)

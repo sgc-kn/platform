@@ -1,0 +1,58 @@
+Variablenname,Beschreibung,Typ
+TKNR,"Nummer des TK-Blattes",Number
+Zst,"BASt-Zählstellennummer",Number
+Land,"Bundesland",Number
+Strklas,"Straßenklasse",Text
+Strnum,"Straßennummer",Text
+Datum,"Datum",DateTime
+Wotag,"Wochentag (1: Montag, …, 7: Sonntag), optional",Number
+Fahrtzw,"Fahrtzweckgruppe (w: Werktag, u: Urlaubswerktag, s: Sonn- und Feiertag), optional",Text
+Stunde,"Erhebungsstunde (Stunde 01 ≡ 0.00 – 1.00 Uhr etc.), optional",Number
+KFZ_R1,"Verkehrsmenge alle Kfz Richtung 1",Number
+KFZ_R2,"Verkehrsmenge alle Kfz Richtung 2",Number
+Lkw_R1,"Verkehrsmenge Lkw-Gruppe Richtung 1",Number
+Lkw_R2,"Verkehrsmenge Lkw-Gruppe Richtung 2",Number
+PLZ_R1,"Verkehrsmenge Pkw-Gruppe (Pkw, Lfw, Mot) Richtung 1",Number
+Pkw_R1,"Verkehrsmenge Pkw Richtung 1",Number
+Lfw_R1,"Verkehrsmenge Lieferwagen Richtung 1",Number
+Mot_R1,"Verkehrsmenge Motorräder Richtung 1",Number
+PmA_R1,"Verkehrsmenge Pkw m. Anhänger Richtung 1",Number
+Bus_R1,"Verkehrsmenge Bus Richtung 1",Number
+LoA_R1,"Verkehrsmenge Lkw > 3,5t zGG ohne Anhänger Richtung 1",Number
+Lzg_R1,"Verkehrsmenge Lkw > 3,5t zGG mit Anhänger (LmA) und Sattelzüge (Sat) Richtung 1",Number
+Sat_R1,"Verkehrsmenge Sattelzüge Richtung 1",Number
+Son_R1,"Verkehrsmenge sonstige Kfz (nicht klassifizierbare Kfz) Richtung 1",Number
+PLZ_R2,"Verkehrsmenge Pkw-Gruppe (Pkw, Lfw, Mot) Richtung 2",Number
+Pkw_R2,"Verkehrsmenge Pkw Richtung 2",Number
+Lfw_R2,"Verkehrsmenge Lieferwagen Richtung 2",Number
+Mot_R2,"Verkehrsmenge Motorräder Richtung 2",Number
+PmA_R2,"Verkehrsmenge Pkw m. Anhänger Richtung 2",Number
+Bus_R2,"Verkehrsmenge Bus Richtung 2",Number
+LoA_R2,"Verkehrsmenge Lkw > 3,5t zGG ohne Anhänger Richtung 2",Number
+Lzg_R2,"Verkehrsmenge Lkw > 3,5t zGG mit Anhänger (LmA) und Sattelzüge (Sat) Richtung 2",Number
+Sat_R2,"Verkehrsmenge Sattelzüge Richtung 2",Number
+Son_R2,"Verkehrsmenge sonstige Kfz (nicht klassifizierbare Kfz) Richtung 2",Number
+K_KFZ_R1,"Prüfkennziffer KFZ_R1",Number
+K_KFZ_R2,"Prüfkennziffer KFZ_R2",Number
+K_Lkw_R1,"Prüfkennziffer Lkw_R1",Number
+K_Lkw_R2,"Prüfkennziffer Lkw_R2",Number
+K_PLZ_R1,"Prüfkennziffer PLZ_R1",Number
+K_Pkw_R1,"Prüfkennziffer Pkw_R1",Number
+K_Lfw_R1,"Prüfkennziffer Lfw_R1",Number
+K_Mot_R1,"Prüfkennziffer Mot_R1",Number
+K_PmA_R1,"Prüfkennziffer PmA_R1",Number
+K_Bus_R1,"Prüfkennziffer Bus_R1",Number
+K_LoA_R1,"Prüfkennziffer LoA_R1",Number
+K_Lzg_R1,"Prüfkennziffer Lzg_R1",Number
+K_Sat_R1,"Prüfkennziffer Sat_R1",Number
+K_Son_R1,"Prüfkennziffer Son_R1",Number
+K_PLZ_R2,"Prüfkennziffer PLZ_R2",Number
+K_Pkw_R2,"Prüfkennziffer Pkw_R2",Number
+K_Lfw_R2,"Prüfkennziffer Lfw_R2",Number
+K_Mot_R2,"Prüfkennziffer Mot_R2",Number
+K_PmA_R2,"Prüfkennziffer PmA_R2",Number
+K_Bus_R2,"Prüfkennziffer Bus_R2",Number
+K_LoA_R2,"Prüfkennziffer LoA_R2",Number
+K_Lzg_R2,"Prüfkennziffer Lzg_R2",Number
+K_Sat_R2,"Prüfkennziffer Sat_R2",Number
+K_Son_R2,"Prüfkennziffer Son_R2",Number
