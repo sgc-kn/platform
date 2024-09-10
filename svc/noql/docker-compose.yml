@@ -2,7 +2,7 @@ version: '3.8'
 
 services:
   postgres:
-    image: registry.hub.docker.com/timescale/timescaledb:latest-pg16
+    image: docker.io/timescale/timescaledb:latest-pg16
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: noql
@@ -13,7 +13,7 @@ services:
       - ./setup.sql:/docker-entrypoint-initdb.d/setup.sql:z
 
   postgrest:
-    image: registry.hub.docker.com/postgrest/postgrest:latest
+    image: docker.io/postgrest/postgrest:latest
     environment:
       PGRST_DB_URI: "postgres://postgres:noql@postgres:5432/noql"
       PGRST_DB_SCHEMA: "postgrest"
@@ -25,7 +25,7 @@ services:
       - postgres
 
   swagger:
-    image: registry.hub.docker.com/swaggerapi/swagger-ui
+    image: docker.io/swaggerapi/swagger-ui
     environment:
       - SWAGGER_JSON_URL=/api/
     ports:
@@ -34,7 +34,7 @@ services:
       - postgrest
 
   caddy:
-    image: registry.hub.docker.com/library/caddy:latest
+    image: docker.io/library/caddy:latest
     ports:
       - "8000:80"
     volumes:
