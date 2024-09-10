@@ -1,0 +1,41 @@
+# Adapted from
+# https://github.com/orchestracities/ngsi-timeseries-api/blob/163f69d85ebc11799e7e437cdcd84033030b18aa/docker/docker-compose-common.yml
+
+version: '3'
+
+services:
+
+  timescale:
+    image: docker.io/timescale/timescaledb-postgis:${TIMESCALE_VERSION:-2.3.0-pg13}
+    ports:
+      - "5432:5432"
+      # Don't expose container port 5432 with the same number outside of the
+      # swarm. In the Travis test env, there's already a PG instance running
+      # on port 5432!
+    environment:
+      - POSTGRES_PASSWORD=*
+
+  quantumleap-db-setup:
+    image: docker.io/orchestracities/quantumleap-pg-init:latest
+    environment:
+      - QL_DB_PASS=*
+      - QL_DB_INIT_DIR=/ql-db-init
+      - PG_HOST=timescale
+      - PG_PASS=*
+
+  quantumleap:
+    image: docker.io/orchestracities/quantumleap:1.0.0
+    ports:
+      - "8668:8668"
+    environment:
+      - QL_DEFAULT_DB=timescale
+      - POSTGRES_HOST=timescale
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB_NAME=quantumleap
+      - POSTGRES_DB_USER=quantumleap
+      - POSTGRES_DB_PASS=*
+      - POSTGRES_USE_SSL=False
+      - USE_GEOCODING=True
+      - CACHE_GEOCODING=False
+      - CACHE_QUERIES=False
+      - LOGLEVEL=WARNING

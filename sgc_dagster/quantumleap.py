@@ -3,19 +3,19 @@ import httpx
 import time
 import tqdm
 
-udp_domain = "udp-kn.de"
-udp_realm = "konstanz"
+idm_base_url = "https://idm.udp-kn.de/auth/realms/konstanz"
+ql_base_url = "https://apim.udp-kn.de/gateway/quantumleap"
 
 HTTPStatusError = httpx.HTTPStatusError
 
-class Client():
-    def __init__(self, fiware_service: str):
-        self._service = fiware_service
+class UDPAuth():
+    def __init__(self, *, base_url = idm_base_url):
+        self._base_url = idm_base_url
 
-    def get_token(self, scope="read"):
+    def header(self, scope: str):
         r = httpx.request(
             'POST',
-            f'https://idm.{udp_domain}/auth/realms/{udp_realm}/protocol/openid-connect/token',
+            f'{self._base_url}/protocol/openid-connect/token',
             data=dict(
                 client_id = secrets.get('udp', 'client_id'),
                 client_secret = secrets.get('udp', 'client_secret'),
@@ -26,18 +26,33 @@ class Client():
             )
         )
         r.raise_for_status()
-        return r.json()['access_token']
+        token = r.json()['access_token']
+        return { 'Authorization' : f"Bearer {token}" }
+
+class DummyAuth():
+    def header(self, scope: str):
+        return dict()
+
+
+class Client():
+    def __init__(self, fiware_service: str, *, base_url = ql_base_url, auth = None):
+        if auth is None:
+            self._auth = UDPAuth()
+        else:
+            self._auth = auth
+
+        self._base_url = base_url
+        self._service = fiware_service
 
     def get_entity(self, entity_id):
         r = httpx.request(
             'GET',
-            f'https://apim.{udp_domain}/gateway/quantumleap/v2/entities/{entity_id}',
+            f'{self._base_url}/v2/entities/{entity_id}',
             params = { 'lastN': 1 },
             headers = {
-                'Authorization' : f"Bearer {self.get_token("read")}",
                 'Fiware-Service' : self._service,
                 'Fiware-ServicePath' : '/',
-            },
+            } | self._auth.header('read'),
         )
         r.raise_for_status()
 
@@ -55,13 +70,12 @@ class Client():
         assert len(lst) <= 256
         r = httpx.request(
             'POST',
-            f'https://apim.{udp_domain}/gateway/quantumleap/v2/notify',
+            f'{self._base_url}/v2/notify',
             headers = {
-                'Authorization' : f"Bearer {self.get_token("write")}",
                 'Fiware-Service' : self._service,
                 'Fiware-ServicePath' : '/',
                 'Fiware-TimeIndex-Attribute' : time_index,
-            },
+            } | self._auth.header('write'),
             json = dict(
                 data = lst
             ),
