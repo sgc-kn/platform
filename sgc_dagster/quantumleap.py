@@ -66,6 +66,22 @@ class Client():
 
         return o
 
+    def delete_entity_type(self, ty, *, ignore_404 = False):
+        r = httpx.request(
+            'DELETE',
+            f'{self._base_url}/v2/types/{ty}',
+            headers = {
+                'Fiware-Service' : self._service,
+                'Fiware-ServicePath' : '/',
+            } | self._auth.header('delete'),
+            timeout = 30,
+        )
+        if ignore_404 and r.status_code == 404:
+            # type does not exist
+            return
+        else:
+            r.raise_for_status()
+
     def _post_entity_update_batch(self, lst, *args, time_index = "time_index"):
         assert len(lst) <= 256
         r = httpx.request(
