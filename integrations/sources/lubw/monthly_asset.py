@@ -1,7 +1,6 @@
 from . import lib
-from ... import secrets
-from ... import quantumleap
-from ...registry import register
+from utils import secrets
+from integrations.sinks import quantumleap
 from dagster import DynamicOut, DynamicOutput
 from dagster import MonthlyPartitionsDefinition
 from dagster import MultiPartitionsDefinition
@@ -100,4 +99,5 @@ def asset():
     df = dataframe(batches().map(get).collect())
     return save(df)
 
-register(assets = [asset])
+from utils.dagster import registry as dagster_registry
+dagster_registry.register(assets = [asset])

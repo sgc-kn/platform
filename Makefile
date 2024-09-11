@@ -1,4 +1,4 @@
-dev: setup
+dagster: setup
 	mkdir -p data
 	venv/bin/dagster dev
 

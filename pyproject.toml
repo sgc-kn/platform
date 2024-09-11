@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "sgc-dagster"
+name = "platform"
 version = "0.0.1"
 authors = [
   { name="Patrik Keller", email="patrik.keller@konstanz.de" }
@@ -26,8 +26,8 @@ Homepage = "https://github.com/sgc-kn/sgc-dagster"
 Issues = "https://github.com/sgc-kn/sgc-dagster/issues"
 
 [tool.dagster]
-module_name = "sgc_dagster.definitions"
-code_location_name = "sgc_dagster"
+module_name = "utils.dagster.definitions"
+code_location_name = "sgc-platform"
 
-[tool.setuptools]
-packages = [ "sgc_dagster" ]
+[tool.setuptools.packages.find]
+include = [ "integrations.*", "utils*" ]

@@ -1,7 +1,6 @@
 from . import lib
-from ... import secrets
-from ... import quantumleap
-from ...registry import register
+from utils import secrets
+from integrations.sinks import quantumleap
 from dagster import graph, job, op
 from dagster import DynamicOut, DynamicOutput
 from dagster import RetryPolicy, Jitter, Backoff
@@ -109,4 +108,5 @@ schedule = ScheduleDefinition(
     #  default_status=DefaultScheduleStatus.RUNNING,
 )
 
-register(jobs = [job], schedules = [schedule])
+from utils.dagster import registry as dagster_registry
+dagster_registry.register(jobs = [job], schedules = [schedule])

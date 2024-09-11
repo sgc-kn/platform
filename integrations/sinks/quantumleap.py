@@ -1,4 +1,4 @@
-from . import secrets
+from utils import secrets
 import httpx
 import time
 import tqdm
