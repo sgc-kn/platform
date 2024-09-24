@@ -1,4 +1,3 @@
-from utils import secrets
 import httpx
 import time
 import tqdm
@@ -8,39 +7,9 @@ ql_base_url = "https://apim.udp-kn.de/gateway/quantumleap"
 
 HTTPStatusError = httpx.HTTPStatusError
 
-class UDPAuth():
-    def __init__(self, *, base_url = idm_base_url):
-        self._base_url = idm_base_url
-
-    def header(self, scope: str):
-        r = httpx.request(
-            'POST',
-            f'{self._base_url}/protocol/openid-connect/token',
-            data=dict(
-                client_id = secrets.get('udp', 'client_id'),
-                client_secret = secrets.get('udp', 'client_secret'),
-                grant_type = 'password',
-                username=secrets.get('udp', 'username'),
-                password=secrets.get('udp', 'password'),
-                scope = f"api:{scope}",
-            )
-        )
-        r.raise_for_status()
-        token = r.json()['access_token']
-        return { 'Authorization' : f"Bearer {token}" }
-
-class DummyAuth():
-    def header(self, scope: str):
-        return dict()
-
-
 class Client():
     def __init__(self, fiware_service: str, *, base_url = ql_base_url, auth = None):
-        if auth is None:
-            self._auth = UDPAuth()
-        else:
-            self._auth = auth
-
+        self._auth = auth
         self._base_url = base_url
         self._service = fiware_service
 
@@ -52,7 +21,8 @@ class Client():
             headers = {
                 'Fiware-Service' : self._service,
                 'Fiware-ServicePath' : '/',
-            } | self._auth.header('read'),
+            },
+            auth = self._auth,
         )
         r.raise_for_status()
 
@@ -73,8 +43,9 @@ class Client():
             headers = {
                 'Fiware-Service' : self._service,
                 'Fiware-ServicePath' : '/',
-            } | self._auth.header('delete'),
+            },
             timeout = 30,
+            auth = self._auth,
         )
         if ignore_404 and r.status_code == 404:
             # type does not exist
@@ -91,10 +62,11 @@ class Client():
                 'Fiware-Service' : self._service,
                 'Fiware-ServicePath' : '/',
                 'Fiware-TimeIndex-Attribute' : time_index,
-            } | self._auth.header('write'),
+            },
             json = dict(
                 data = lst
             ),
+            auth = self._auth,
         )
         r.raise_for_status()
         return r
