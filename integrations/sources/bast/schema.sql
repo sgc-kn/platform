@@ -1,20 +1,23 @@
-drop table if exists bast_stations;
+drop table if exists bast_stations cascade;
 create table bast_stations (
-  nr integer primary key,
+  zst integer primary key,
+  tknr integer,
   name text,
   strasse text,
   r1_fernziel text,
   r2_fernziel text,
   r1_nahziel text,
   r2_nahziel text
-);drop table if exists bast_measurements;
+);drop table if exists bast_measurements cascade;
 create table bast_measurements (
-  zst integer references bast_stations(nr),
+  von timestamptz,
+  bis timestamptz,
+  zst integer references bast_stations(zst),
   tknr double precision,
   land double precision,
   strklas text,
   strnum text,
-  datum timestamptz,
+  datum text,
   wotag double precision,
   fahrtzw text,
   stunde double precision,
@@ -67,10 +70,12 @@ create table bast_measurements (
   k_sat_r2 double precision,
   k_son_r2 double precision
 );
-select create_hypertable('bast_measurements', 'datum');
+select create_hypertable('bast_measurements', 'von');
 comment on table bast_measurements is $$Dauerzählstellen auf Autobahnen und Bundesstraßen
 
 Siehe https://www.bast.de/DE/Verkehrstechnik/Fachthemen/v2-verkehrszaehlung/Verkehrszaehlung.html?nn=1817946$$;
+comment on column bast_measurements.von is 'Start des Beobachtungszeitraums; abgeleitet aus den Spalten datum und stunde';
+comment on column bast_measurements.bis is 'Ende des Beobachtungszeitraums; abgeleitet aus den Spalten datum und stunde';
 comment on column bast_measurements.tknr is 'Nummer des TK-Blattes';
 comment on column bast_measurements.zst is 'BASt-Zählstellennummer';
 comment on column bast_measurements.land is 'Bundesland';

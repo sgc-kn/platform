@@ -4,7 +4,7 @@ Zst,"BASt-Zählstellennummer",Number
 Land,"Bundesland",Number
 Strklas,"Straßenklasse",Text
 Strnum,"Straßennummer",Text
-Datum,"Datum",DateTime
+Datum,"Datum",Text
 Wotag,"Wochentag (1: Montag, …, 7: Sonntag), optional",Number
 Fahrtzw,"Fahrtzweckgruppe (w: Werktag, u: Urlaubswerktag, s: Sonn- und Feiertag), optional",Text
 Stunde,"Erhebungsstunde (Stunde 01 ≡ 0.00 – 1.00 Uhr etc.), optional",Number
