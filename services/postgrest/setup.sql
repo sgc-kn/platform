@@ -28,3 +28,5 @@ BEGIN
   NOTIFY pgrst, 'reload schema';
 END;
 $$ LANGUAGE plpgsql;
+
+NOTIFY pgrst, 'reload schema';
