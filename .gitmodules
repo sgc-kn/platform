@@ -1,0 +1,3 @@
+[submodule "integrations/sources/mobidata/nodered"]
+	path = integrations/sources/mobidata/nodered
+	url = https://github.com/sgc-kn/nr-flows-mobidata.git
