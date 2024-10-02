@@ -1,0 +1,7 @@
+version: 2
+updates:
+  - package-ecosystem: "gitsubmodule"
+    directories:
+      - "/integrations/**/nodered"
+    schedule:
+      interval: "daily"
