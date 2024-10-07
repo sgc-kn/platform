@@ -2,6 +2,6 @@ version: 2
 updates:
   - package-ecosystem: "gitsubmodule"
     directories:
-      - "/integrations/**/nodered"
+      - "/integrations/sources/mobidata/nodered"
     schedule:
       interval: "daily"
