@@ -1,0 +1,6 @@
+# This file holds the development requirements.
+# The requirements for deploying dagster are listed in pyproject.toml.
+
+-e . # install local package for editing as defined in pyproject.toml
+
+notebook

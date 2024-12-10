@@ -1,7 +1,19 @@
-__pycache__
-*.egg-info
 data
 secrets/identity
 tmp*
+
+# Python
+*.egg-info
+__pycache__
 venv
 *.ipynb_checkpoints
+
+# Devenv
+.devenv*
+devenv.local.nix
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
