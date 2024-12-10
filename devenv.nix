@@ -8,7 +8,13 @@
   env.DEVENV = "sgc-kn/platform";
 
   # https://devenv.sh/packages/
-  packages = [ pkgs.git ];
+  packages = [
+    pkgs.git
+
+    # secrets management
+    pkgs.age
+    pkgs.sops
+  ];
 
   # https://devenv.sh/languages/
   languages.python.enable = true;
@@ -17,7 +23,10 @@
 
   # https://devenv.sh/processes/
   processes.dagster = {
-    exec = "dagster dev";
+    exec = ''
+      mkdir -p data
+      dagster dev
+    '';
     process-compose =  {
       availability = {
         backoff_seconds = 5;
@@ -30,6 +39,18 @@
   # services.postgres.enable = true;
 
   # https://devenv.sh/scripts/
+  scripts.setup.exec = ''
+    # create identity for secret management
+
+    if [ -e secrets/identity ] ; then
+      exit 0
+    fi
+
+	  mkdir -p secrets/recipients
+	  age-keygen -o secrets/identity
+	  age-keygen -y secrets/identity > "secrets/recipients/$(USER)@$(shell hostname)"
+  '';
+
   scripts.update.exec = ''
     # install dependencies as defined in the lock files
 
@@ -48,6 +69,7 @@
   '';
 
   enterShell = ''
+    setup
     update
   '';
 

@@ -41,6 +41,8 @@ beautifulsoup4==4.12.3
     # via nbconvert
 bleach==6.2.0
     # via nbconvert
+build==1.2.2.post1
+    # via pip-tools
 certifi==2024.8.30
     # via
     #   httpcore
@@ -54,6 +56,7 @@ click==8.1.7
     # via
     #   dagster
     #   dagster-webserver
+    #   pip-tools
     #   uvicorn
 coloredlogs==14.0
     # via dagster
@@ -233,6 +236,7 @@ overrides==7.7.0
     # via jupyter-server
 packaging==24.1
     # via
+    #   build
     #   dagster
     #   ipykernel
     #   jupyter-server
@@ -247,6 +251,8 @@ parso==0.8.4
     # via jedi
 pexpect==4.9.0
     # via ipython
+pip-tools==7.4.1
+    # via -r requirements.in
 platformdirs==4.3.6
     # via jupyter-core
 prometheus-client==0.21.1
@@ -276,6 +282,10 @@ pygments==2.18.0
     #   ipython
     #   nbconvert
     #   rich
+pyproject-hooks==1.2.0
+    # via
+    #   build
+    #   pip-tools
 python-dateutil==2.9.0.post0
     # via
     #   arrow
@@ -428,8 +438,11 @@ websocket-client==1.8.0
     # via jupyter-server
 websockets==13.0.1
     # via uvicorn
+wheel==0.45.1
+    # via pip-tools
 yarl==1.9.7
     # via gql
 
 # The following packages are considered to be unsafe in a requirements file:
+# pip
 # setuptools
