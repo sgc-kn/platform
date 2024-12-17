@@ -19,7 +19,7 @@
   # https://devenv.sh/languages/
   languages.python.enable = true;
   languages.python.venv.enable = true;
-  languages.python.venv.requirements = "pip-tools";
+  languages.python.venv.requirements = ./requirements.txt;
 
   # https://devenv.sh/processes/
   processes.dagster = {
@@ -51,26 +51,15 @@
 	  age-keygen -y secrets/identity > "secrets/recipients/$(USER)@$(shell hostname)"
   '';
 
-  scripts.update.exec = ''
-    # install dependencies as defined in the lock files
-
-    echo install python dependencies from requirements.txt
-    pip-sync
-  '';
-
   scripts.upgrade.exec = ''
-    # update lock files with newest versions & install
+    # update lock files with newest versions
 
     echo update requirements.txt
     pip-compile --upgrade --strip-extras --quiet
-
-    echo install python dependencies from requirements.txt
-    pip-sync
   '';
 
   enterShell = ''
     setup
-    update
   '';
 
   # https://devenv.sh/tasks/
