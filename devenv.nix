@@ -47,15 +47,30 @@
 
   # https://devenv.sh/scripts/
   scripts.setup.exec = ''
+    if [ "$CODESPACES" == "true" ] ; then
+      setup-codespaces
+    fi
+
     # create identity for secret management
 
     if [ -e secrets/identity ] ; then
       exit 0
     fi
 
-	  mkdir -p secrets/recipients
-	  age-keygen -o secrets/identity
-	  age-keygen -y secrets/identity > "secrets/recipients/$(USER)@$(shell hostname)"
+    mkdir -p secrets/recipients
+    age-keygen -o secrets/identity
+    age-keygen -y secrets/identity > "secrets/recipients/$(USER)@$(shell hostname)"
+  '';
+
+  # https://devenv.sh/scripts/
+  scripts.setup-codespaces.exec = ''
+    # rewrite git remotes to use http w/ access token
+    git config --global --replace-all url.https://x-access-token:''${GITHUB_TOKEN}@github.com/.insteadOf ssh://git@github.com/
+    git config --global --add         url.https://x-access-token:''${GITHUB_TOKEN}@github.com/.insteadOf git@github.com/
+    git config --global --add         url.https://x-access-token:''${GITHUB_TOKEN}@github.com/.insteadOf git@github.com:
+
+    # update and/or initialize all submodules
+    git submodule update --init --recursive
   '';
 
   scripts.upgrade.exec = ''
