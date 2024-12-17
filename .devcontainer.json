@@ -1,5 +1,14 @@
 {
   "customizations": {
+    "codespaces": {
+      "repositories": {
+        "sgc-kn/closed-data": {
+          "permissions": {
+            "contents": "read"
+          }
+        }
+      }
+    },
     "vscode": {
       "extensions": [
         "mkhl.direnv"

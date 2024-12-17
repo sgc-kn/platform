@@ -4,6 +4,13 @@
   # https://devenv.sh/integrations/codespaces-devcontainer/
   devcontainer.enable = true;
 
+  # The following settings go directly into the .devcontainer.json file.
+  # We request read access to private Github repositories.
+  # https://docs.github.com/en/codespaces/managing-your-codespaces/managing-repository-access-for-your-codespaces
+  devcontainer.settings.customizations.codespaces.repositories = {
+    "sgc-kn/closed-data".permissions = { contents = "read"; };
+  };
+
   # https://devenv.sh/basics/
   env.DEVENV = "sgc-kn/platform";
 
