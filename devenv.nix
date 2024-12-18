@@ -72,13 +72,13 @@
   scripts.setup-age-local.exec = ''
     # create identity for secret management
 
-    if [ -e secrets/identity ] ; then
-      exit 0
+    mkdir -p secrets/recipients
+
+    if [ ! -e secrets/identity ] ; then
+      age-keygen -o secrets/identity
     fi
 
-    mkdir -p secrets/recipients
-    age-keygen -o secrets/identity
-    age-keygen -y secrets/identity > "secrets/recipients/$(USER)@$(shell hostname)"
+    age-keygen -y secrets/identity > "secrets/recipients/''${USER}@$(hostname)"
   '';
 
   scripts.setup-codespaces.exec = ''
