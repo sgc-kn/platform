@@ -4,11 +4,26 @@
   # https://devenv.sh/integrations/codespaces-devcontainer/
   devcontainer.enable = true;
 
+
   # The following settings go directly into the .devcontainer.json file.
-  # We request read access to private Github repositories.
-  # https://docs.github.com/en/codespaces/managing-your-codespaces/managing-repository-access-for-your-codespaces
-  devcontainer.settings.customizations.codespaces.repositories = {
-    "sgc-kn/closed-data".permissions = { contents = "read"; };
+  devcontainer.settings = {
+    # We request read access to private Github repositories and configure a secret.
+    # https://docs.github.com/en/codespaces/managing-your-codespaces/managing-repository-access-for-your-codespaces
+    customizations.codespaces.repositories = {
+      "sgc-kn/closed-data".permissions = { contents = "read"; };
+    };
+    # https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces/configuring-dev-containers/specifying-recommended-secrets-for-a-repository
+    secrets = {
+      AGE_SECRET_KEY = {
+        description = lib.strings.concatStringsSep " " [
+          "We track some secrets within the git repository."
+          "We secure them with SOPS & age."
+          "Unlocking the secrets requires a key."
+          "Generate your key with `age-keygen`."
+          "Add the entire key here, including the `AGE-SECRET-KEY-` prefix."
+        ];
+      };
+    };
   };
 
   # https://devenv.sh/basics/
