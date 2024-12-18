@@ -68,6 +68,8 @@
     else
       setup-age-local
     fi
+
+    setup-git-lfs
   '';
 
   scripts.setup-age-local.exec = ''
@@ -106,6 +108,14 @@
       echo "''${AGE_SECRET_KEY}" > secrets/identity
       age-keygen -y secrets/identity > "secrets/recipients/''${GITHUB_USER}@github-codespaces"
     fi
+  '';
+
+  scripts.setup-git-lfs.exec = ''
+    git lfs install --local
+    git lfs pull
+
+    git -C closed-data lfs install --local
+    git -C closed-data lfs pull
   '';
 
   scripts.sops-wrapper.exec = ''
