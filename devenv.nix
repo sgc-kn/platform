@@ -107,6 +107,25 @@
     fi
   '';
 
+  scripts.sops-wrapper.exec = ''
+    set -euo pipefail
+
+    SOPS_AGE_RECIPIENTS=$(cat secrets/recipients/* | paste -sd,)
+    export SOPS_AGE_RECIPIENTS
+
+    SOPS_AGE_KEY_FILE=secrets/identity
+    export SOPS_AGE_KEY_FILE
+
+    exec sops --age "$SOPS_AGE_RECIPIENTS" $@
+  '';
+
+  scripts.sops-reencrypt.exec = ''
+    set -euo pipefail
+
+    sops-wrapper decrypt -i secrets/secrets.yaml
+    sops-wrapper encrypt -i secrets/secrets.yaml
+  '';
+
   scripts.upgrade.exec = ''
     # update lock files with newest versions
 
