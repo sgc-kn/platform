@@ -6,6 +6,9 @@ dagster-webserver
 httpx
 pandas
 
+# notebook dependencies
+openpyxl
+
 # development tools
 notebook
 
