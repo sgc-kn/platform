@@ -31,6 +31,7 @@
   # https://devenv.sh/packages/
   packages = [
     pkgs.git
+    pkgs.git-lfs
 
     # secrets management
     pkgs.age
