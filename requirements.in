@@ -1,10 +1,13 @@
-# This file holds the development requirements.
-# The requirements for deploying dagster are listed in pyproject.toml.
+# dagster
+dagster
+dagster-webserver
 
+# dagster jobs and assets
+httpx
+pandas
+
+# development tools
 notebook
 
-# install local package for editing as defined in pyproject.toml
--e .
-
-# dependency management; used in devenv.nix
+# dependency management
 pip-tools

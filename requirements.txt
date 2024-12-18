@@ -4,8 +4,6 @@
 #
 #    pip-compile
 #
--e file:///home/patrik/devel/sgc-platform
-    # via -r requirements.in
 alembic==1.13.2
     # via dagster
 aniso8601==9.0.1
