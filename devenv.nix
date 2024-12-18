@@ -4,7 +4,6 @@
   # https://devenv.sh/integrations/codespaces-devcontainer/
   devcontainer.enable = true;
 
-
   # The following settings go directly into the .devcontainer.json file.
   devcontainer.settings = {
     # We request read access to private Github repositories and configure a secret.
@@ -27,7 +26,7 @@
   };
 
   # https://devenv.sh/basics/
-  env.DEVENV = "sgc-kn/platform";
+  # env.DEVENV = "sgc-kn/platform";
 
   # https://devenv.sh/packages/
   packages = [
@@ -64,8 +63,13 @@
   scripts.setup.exec = ''
     if [ "$CODESPACES" == "true" ] ; then
       setup-codespaces
+      setup-age-from-env
+    else
+      setup-age-local
     fi
+  '';
 
+  scripts.setup-age-local.exec = ''
     # create identity for secret management
 
     if [ -e secrets/identity ] ; then
@@ -77,7 +81,6 @@
     age-keygen -y secrets/identity > "secrets/recipients/$(USER)@$(shell hostname)"
   '';
 
-  # https://devenv.sh/scripts/
   scripts.setup-codespaces.exec = ''
     # rewrite git remotes to use http w/ access token
     git config --global --replace-all url.https://x-access-token:''${GITHUB_TOKEN}@github.com/.insteadOf ssh://git@github.com/
@@ -86,6 +89,22 @@
 
     # update and/or initialize all submodules
     git submodule update --init --recursive
+  '';
+
+  scripts.setup-age-from-env.exec = ''
+    if [ -z ''${AGE_SECRET_KEY:+x} ] ; then
+      echo WARNING: >&2
+      echo WARNING: The AGE_SECRET_KEY environment variable is not set. >&2
+      echo WARNING: The SOPS-managed secrets will be unavailable. >&2
+      echo WARNING: >&2
+      echo WARNING: On Github Codespaces, follow this advice: >&2
+      echo WARNING: https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces/configuring-dev-containers/specifying-recommended-secrets-for-a-repository
+      echo WARNING: >&2
+    else
+      mkdir -p secrets/recipients
+      echo "''${AGE_SECRET_KEY}" > secrets/identity
+      age-keygen -y secrets/identity > "secrets/recipients/''${GITHUB_USER}@github-codespaces"
+    fi
   '';
 
   scripts.upgrade.exec = ''
