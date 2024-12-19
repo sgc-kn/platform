@@ -11,6 +11,7 @@
     },
     "vscode": {
       "extensions": [
+        "charliermarsh.ruff",
         "mkhl.direnv"
       ]
     }

@@ -6,6 +6,10 @@
 
   # The following settings go directly into the .devcontainer.json file.
   devcontainer.settings = {
+    customizations.vscode.extensions = [
+      "charliermarsh.ruff" # code formatting and linting
+      "mkhl.direnv" # recommended setup for devenv/devcontainer
+    ];
     # We request read access to private Github repositories and configure a secret.
     # https://docs.github.com/en/codespaces/managing-your-codespaces/managing-repository-access-for-your-codespaces
     customizations.codespaces.repositories = {
