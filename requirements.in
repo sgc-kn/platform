@@ -11,6 +11,7 @@ openpyxl
 
 # development tools
 notebook
+ruff
 
 # dependency management
 pip-tools
