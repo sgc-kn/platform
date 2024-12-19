@@ -7,7 +7,11 @@ from utils import secrets
 
 
 class BearerTokenAuthenticator(httpx.Auth):
-    def __init__(self, auth_url: str, **kwargs,):
+    def __init__(
+        self,
+        auth_url: str,
+        **kwargs,
+    ):
         self.auth_url = auth_url
         self.kwargs = kwargs
         self.token: Optional[str] = None
@@ -20,8 +24,8 @@ class BearerTokenAuthenticator(httpx.Auth):
         response = httpx.post(self.auth_url, **self.kwargs)
         response.raise_for_status()
         token_data = response.json()
-        token = token_data['access_token']
-        expires_in = token_data['expires_in']  # Typically seconds until expiry
+        token = token_data["access_token"]
+        expires_in = token_data["expires_in"]  # Typically seconds until expiry
         self.token_expiry = int(time.time()) + expires_in - 10  # Buffer of 10 seconds
         return token
 
@@ -49,30 +53,40 @@ class BearerTokenAuthenticator(httpx.Auth):
         request.headers["Authorization"] = f"Bearer {token}"
         return request
 
+
 class UDSPApiAuthenticator(httpx.Auth):
-    def __init__(self, *, realm_url: str, client_id: str, client_secret: str,
-                 username: str, password: str, scopes: list):
+    def __init__(
+        self,
+        *,
+        realm_url: str,
+        client_id: str,
+        client_secret: str,
+        username: str,
+        password: str,
+        scopes: list,
+    ):
         self.authenticator = BearerTokenAuthenticator(
-                f'{realm_url}/protocol/openid-connect/token',
-                data = dict(
-                    client_id = client_id,
-                    client_secret = client_secret,
-                    grant_type = 'password',
-                    username=username,
-                    password=password,
-                    scope = ' '.join(f"api:{x}" for x in scopes),
-                    )
-                )
+            f"{realm_url}/protocol/openid-connect/token",
+            data=dict(
+                client_id=client_id,
+                client_secret=client_secret,
+                grant_type="password",
+                username=username,
+                password=password,
+                scope=" ".join(f"api:{x}" for x in scopes),
+            ),
+        )
 
     def auth_flow(self, request: httpx.Request):
         yield self.authenticator.auth_flow(request)
 
+
 def udp_kn_auth():
     return UDSPApiAuthenticator(
-            realm_url = "https://idm.udp-kn.de/auth/realms/konstanz",
-            client_id = secrets.get('udp', 'client_id'),
-            client_secret = secrets.get('udp', 'client_secret'),
-            username=secrets.get('udp', 'username'),
-            password=secrets.get('udp', 'password'),
-            scopes=['read', 'write', 'delete'],
-            )
+        realm_url="https://idm.udp-kn.de/auth/realms/konstanz",
+        client_id=secrets.get("udp", "client_id"),
+        client_secret=secrets.get("udp", "client_secret"),
+        username=secrets.get("udp", "username"),
+        password=secrets.get("udp", "password"),
+        scopes=["read", "write", "delete"],
+    )

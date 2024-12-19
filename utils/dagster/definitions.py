@@ -8,14 +8,16 @@
 import importlib
 import os
 
+
 def is_dagster_module(path):
-    with open(path, 'r', encoding='utf-8') as f:
+    with open(path, "r", encoding="utf-8") as f:
         content = f.read()
-        return 'dagster_registry.register(' in content
+        return "dagster_registry.register(" in content
+
 
 def find_dagster_modules(package):
     def filter(name):
-        return not (name.startswith('_') or name.startswith('.'))
+        return not (name.startswith("_") or name.startswith("."))
 
     spec = importlib.util.find_spec(package)
     for p in spec.submodule_search_locations:
@@ -23,21 +25,22 @@ def find_dagster_modules(package):
             continue
 
         for root, dirs, files in os.walk(p, topdown=True):
-            dirs[:] = [ d for d in dirs if filter(d) ]
+            dirs[:] = [d for d in dirs if filter(d)]
 
             for f in files:
-                if not filter(f) or not f.endswith('.py'):
+                if not filter(f) or not f.endswith(".py"):
                     continue
 
-                path = root + '/' + f
+                path = root + "/" + f
                 if not is_dagster_module(path):
                     continue
 
                 relative = os.path.relpath(path, p)
-                module_name = relative.replace(os.path.sep, ".") # Replace /
+                module_name = relative.replace(os.path.sep, ".")  # Replace /
                 module_name = module_name[:-3]  # Remove ".py"
 
-                yield (relative, package + '.' + module_name)
+                yield (relative, package + "." + module_name)
+
 
 def full_module_name(base, path):
     relative_path = os.path.relpath(path, base_path)
@@ -50,7 +53,8 @@ def import_dagster_modules(package):
         # print(f"import dagster module {m}")
         importlib.import_module(m)
 
-import_dagster_modules('integrations')
+
+import_dagster_modules("integrations")
 
 
 ## The imported modules have registered themselves

@@ -5,6 +5,7 @@ import time
 
 # helper function; exit on http error
 
+
 def req(*args, **kwargs):
     try:
         r = httpx.request(*args, **kwargs)
@@ -16,30 +17,33 @@ def req(*args, **kwargs):
 
     return r
 
+
 # prepare table
 
 stmts = [
-        'DROP TABLE IF EXISTS table0',
-        '''
+    "DROP TABLE IF EXISTS table0",
+    """
         CREATE TABLE table0 (
           time timestamptz,
           value double precision
         );
-        ''',
-        "SELECT create_hypertable('table0', 'time')",
-        ]
+        """,
+    "SELECT create_hypertable('table0', 'time')",
+]
 
 for stmt in stmts:
-    req('POST',
-        'http://localhost:8000/api/rpc/mgmt',
-        headers = {'Content-Type': 'text/plain'},
-        content = stmt)
+    req(
+        "POST",
+        "http://localhost:8000/api/rpc/mgmt",
+        headers={"Content-Type": "text/plain"},
+        content=stmt,
+    )
 
 time.sleep(1)
 
 # post data as csv
 
-data = '''time,value
+data = """time,value
 2023-01-01 00:00:00+00,100.0
 2023-01-01 01:00:00+00,101.5
 2023-01-01 02:00:00+00,102.2
@@ -60,39 +64,43 @@ data = '''time,value
 2023-01-01 17:00:00+00,123.4
 2023-01-01 18:00:00+00,124.8
 2023-01-01 19:00:00+00,126.2
-'''
+"""
 
-req('POST',
-    'http://localhost:8000/api/table0',
-    content = data,
-    headers = { 'Content-Type': 'text/csv' },
-    )
+req(
+    "POST",
+    "http://localhost:8000/api/table0",
+    content=data,
+    headers={"Content-Type": "text/csv"},
+)
 
 # post data as json
 
 data = [
-        dict( time = '2023-01-01 20:00:00+00', value = 101.8),
-        dict( time = '2023-01-01 21:00:00+00', value = 104.7),
-        ]
+    dict(time="2023-01-01 20:00:00+00", value=101.8),
+    dict(time="2023-01-01 21:00:00+00", value=104.7),
+]
 
-req('POST',
-    'http://localhost:8000/api/table0',
-    json = data,
-    )
+req(
+    "POST",
+    "http://localhost:8000/api/table0",
+    json=data,
+)
 
 # read some values from the end of the table as json
 
-r = req('GET',
-        'http://localhost:8000/api/table0',
-        params=dict(time = 'gte.2023-01-01 17:00:00+00')
-        )
+r = req(
+    "GET",
+    "http://localhost:8000/api/table0",
+    params=dict(time="gte.2023-01-01 17:00:00+00"),
+)
 print(json.dumps(r.json(), indent=2))
 
 # read some values from the top of the table as csv
 
-r = req('GET',
-        'http://localhost:8000/api/table0',
-        params=dict(time = 'lte.2023-01-01 04:00:00+00'),
-        headers=dict(Accept = 'text/csv'),
-        )
+r = req(
+    "GET",
+    "http://localhost:8000/api/table0",
+    params=dict(time="lte.2023-01-01 04:00:00+00"),
+    headers=dict(Accept="text/csv"),
+)
 print(r.text)
