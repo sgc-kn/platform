@@ -9,7 +9,11 @@
     customizations.vscode.extensions = [
       "charliermarsh.ruff" # code formatting and linting
       "mkhl.direnv" # recommended setup for devenv/devcontainer
+      "ms-toolsai.jupyter" # notebook support
     ];
+    customizations.vscode.settings = {
+      direnv.restart.automatic = true;
+    };
     # We request read access to private Github repositories and configure a secret.
     # https://docs.github.com/en/codespaces/managing-your-codespaces/managing-repository-access-for-your-codespaces
     customizations.codespaces.repositories = {

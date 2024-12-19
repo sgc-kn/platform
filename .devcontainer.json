@@ -12,8 +12,16 @@
     "vscode": {
       "extensions": [
         "charliermarsh.ruff",
-        "mkhl.direnv"
-      ]
+        "mkhl.direnv",
+        "ms-toolsai.jupyter"
+      ],
+      "settings": {
+        "direnv": {
+          "restart": {
+            "automatic": true
+          }
+        }
+      }
     }
   },
   "image": "ghcr.io/cachix/devenv:latest",
