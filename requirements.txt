@@ -64,15 +64,15 @@ croniter==3.0.3
     # via dagster
 dagster==1.8.4
     # via
+    #   -r requirements.in
     #   dagster-graphql
     #   dagster-webserver
-    #   platform
 dagster-graphql==1.8.4
     # via dagster-webserver
 dagster-pipes==1.8.4
     # via dagster
 dagster-webserver==1.8.4
-    # via platform
+    # via -r requirements.in
 debugpy==1.8.9
     # via ipykernel
 decorator==5.1.1
@@ -81,6 +81,8 @@ defusedxml==0.7.1
     # via nbconvert
 docstring-parser==0.16
     # via dagster
+et-xmlfile==2.0.0
+    # via openpyxl
 executing==2.1.0
     # via stack-data
 fastjsonschema==2.21.1
@@ -120,8 +122,8 @@ httptools==0.6.1
     # via uvicorn
 httpx==0.27.2
     # via
+    #   -r requirements.in
     #   jupyterlab
-    #   platform
 humanfriendly==10.0
     # via coloredlogs
 idna==3.8
@@ -139,7 +141,7 @@ isoduration==20.11.0
     # via jsonschema
 jedi==0.19.2
     # via ipython
-jinja2==3.1.4
+jinja2==3.1.5
     # via
     #   dagster
     #   jupyter-server
@@ -231,7 +233,7 @@ notebook-shim==0.2.4
 numpy==2.1.0
     # via pandas
 openpyxl==3.1.5
-    # manual after changing requirements.in
+    # via -r requirements.in
 overrides==7.7.0
     # via jupyter-server
 packaging==24.1
@@ -244,7 +246,7 @@ packaging==24.1
     #   jupyterlab-server
     #   nbconvert
 pandas==2.2.2
-    # via platform
+    # via -r requirements.in
 pandocfilters==1.5.1
     # via nbconvert
 parso==0.8.4
@@ -342,7 +344,7 @@ rpds-py==0.22.3
     #   jsonschema
     #   referencing
 ruff==0.8.3
-    # manual after changing requirements.in
+    # via -r requirements.in
 send2trash==1.8.3
     # via jupyter-server
 six==1.16.0
