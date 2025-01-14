@@ -14,11 +14,6 @@
     customizations.vscode.settings = {
       direnv.restart.automatic = true;
     };
-    # We request read access to private Github repositories and configure a secret.
-    # https://docs.github.com/en/codespaces/managing-your-codespaces/managing-repository-access-for-your-codespaces
-    customizations.codespaces.repositories = {
-      "sgc-kn/closed-data".permissions = { contents = "read"; };
-    };
     # https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces/configuring-dev-containers/specifying-recommended-secrets-for-a-repository
     secrets = {
       AGE_SECRET_KEY = {
@@ -121,9 +116,6 @@
   scripts.setup-git-lfs.exec = ''
     git lfs install --local
     git lfs pull
-
-    git -C closed-data lfs install --local
-    git -C closed-data lfs pull
   '';
 
   scripts.sops-wrapper.exec = ''
