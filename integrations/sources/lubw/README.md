@@ -1,6 +1,7 @@
 ## Context
 
-The development flow here was
+I've used this to sync the historic lubw data. The data is now updated
+via nodered nr-lubw. The development flow here was:
 
 1. Try implementing incremental and historic sync (from lubw to
    quantumleap) Dagster job.

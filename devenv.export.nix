@@ -71,6 +71,9 @@
 
     # update and/or initialize all submodules
     git submodule update --init --recursive
+
+    # allow diffing git-lfs files
+    git config diff.lfs.textconv cat
   '';
 
   scripts.setup-age-from-env.exec = ''
