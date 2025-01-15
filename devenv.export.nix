@@ -65,9 +65,10 @@
 
   scripts.setup-codespaces.exec = ''
     # rewrite git remotes to use http w/ access token
-    git config --global --replace-all url.https://x-access-token:''${GITHUB_TOKEN}@github.com/.insteadOf ssh://git@github.com/
-    git config --global --add         url.https://x-access-token:''${GITHUB_TOKEN}@github.com/.insteadOf git@github.com/
-    git config --global --add         url.https://x-access-token:''${GITHUB_TOKEN}@github.com/.insteadOf git@github.com:
+    git config --global --list | grep -o '^url.https://x-access-token:[^=]*' | xargs -n1 git config --global --unset-all
+    git config --global --add url.https://x-access-token:''${GITHUB_TOKEN}@github.com/.insteadOf ssh://git@github.com/
+    git config --global --add url.https://x-access-token:''${GITHUB_TOKEN}@github.com/.insteadOf git@github.com/
+    git config --global --add url.https://x-access-token:''${GITHUB_TOKEN}@github.com/.insteadOf git@github.com:
 
     # update and/or initialize all submodules
     git submodule update --init --recursive
