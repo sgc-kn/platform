@@ -10,9 +10,6 @@
       "mkhl.direnv" # recommended setup for devenv/devcontainer
       "ms-toolsai.jupyter" # notebook support
     ];
-    customizations.vscode.settings = {
-      direnv.restart.automatic = true;
-    };
     # https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces/configuring-dev-containers/specifying-recommended-secrets-for-a-repository
     secrets = {
       AGE_SECRET_KEY = {

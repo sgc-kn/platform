@@ -5,14 +5,7 @@
         "charliermarsh.ruff",
         "mkhl.direnv",
         "ms-toolsai.jupyter"
-      ],
-      "settings": {
-        "direnv": {
-          "restart": {
-            "automatic": true
-          }
-        }
-      }
+      ]
     }
   },
   "image": "ghcr.io/cachix/devenv:latest",
