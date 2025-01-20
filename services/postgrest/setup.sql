@@ -21,12 +21,49 @@ SET search_path = postgrest, public;
 -- execute arbitrary SQL from HTTP
 --
 
-CREATE OR REPLACE FUNCTION mgmt( TEXT ) RETURNS void AS
-$$
+DROP FUNCTION IF EXISTS configure_postgrest;
+
+CREATE FUNCTION configure_postgrest()
+RETURNS void AS $$
 BEGIN
-  EXECUTE $1;
-  NOTIFY pgrst, 'reload schema';
+    -- Set db-schemas: postgrest, postgrest_*, ...
+    PERFORM set_config('pgrst.db_schemas', STRING_AGG(schema_name, ', '), true)
+    FROM (
+      SELECT 'postgrest' as schema_name
+      UNION ALL
+      SELECT schema_name
+      FROM information_schema.schemata
+    	WHERE schema_name LIKE 'postgrest_%'
+	) subquery;
+	
+	-- Reload config and schemata
+	NOTIFY pgrst;
 END;
 $$ LANGUAGE plpgsql;
 
-NOTIFY pgrst, 'reload schema';
+SELECT configure_postgrest();
+
+DROP FUNCTION IF EXISTS execute_many;
+
+CREATE FUNCTION execute_many(
+    statements TEXT[]
+)
+RETURNS VOID AS $$
+DECLARE
+    stmt TEXT;
+BEGIN
+    -- Start a transaction block
+    BEGIN
+        FOREACH stmt IN ARRAY statements LOOP
+            EXECUTE stmt;
+        END LOOP;
+    EXCEPTION WHEN OTHERS THEN
+        -- Rollback the transaction on any error
+        RAISE EXCEPTION 'Transaction failed: %', SQLERRM;
+        ROLLBACK;
+    END;
+	
+    -- Update config; implicitly reload schema
+    PERFORM configure_postgrest();
+END;
+$$ LANGUAGE plpgsql;

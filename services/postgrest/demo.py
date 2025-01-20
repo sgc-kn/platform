@@ -21,23 +21,21 @@ def req(*args, **kwargs):
 # prepare table
 
 stmts = [
-    "DROP TABLE IF EXISTS table0",
+    "DROP SCHEMA IF EXISTS postgrest_ds0 CASCADE",
     """
-        CREATE TABLE table0 (
+        CREATE TABLE postgrest_ds0.table0 (
           time timestamptz,
           value double precision
         );
         """,
-    "SELECT create_hypertable('table0', 'time')",
+    "SELECT create_hypertable('postgrest_ds0.table0', 'time')",
 ]
 
-for stmt in stmts:
-    req(
-        "POST",
-        "http://localhost:8000/api/rpc/mgmt",
-        headers={"Content-Type": "text/plain"},
-        content=stmt,
-    )
+req(
+    "POST",
+    "http://localhost:8000/api/rpc/execute_many",
+    json=dict(statements = stmts),
+)
 
 time.sleep(1)
 
@@ -70,7 +68,7 @@ req(
     "POST",
     "http://localhost:8000/api/table0",
     content=data,
-    headers={"Content-Type": "text/csv"},
+    headers={"Content-Type": "text/csv", "Content-Profile": "postgrest_ds0"},
 )
 
 # post data as json
@@ -83,6 +81,7 @@ data = [
 req(
     "POST",
     "http://localhost:8000/api/table0",
+    headers={"Content-Profile": "postgrest_ds0"},
     json=data,
 )
 
@@ -92,6 +91,7 @@ r = req(
     "GET",
     "http://localhost:8000/api/table0",
     params=dict(time="gte.2023-01-01 17:00:00+00"),
+    headers={"Accept-Profile": "postgrest_ds0"},
 )
 print(json.dumps(r.json(), indent=2))
 
@@ -101,6 +101,6 @@ r = req(
     "GET",
     "http://localhost:8000/api/table0",
     params=dict(time="lte.2023-01-01 04:00:00+00"),
-    headers=dict(Accept="text/csv"),
+    headers={"Accept": "text/csv", "Accept-Profile": "postgrest_ds0"},
 )
 print(r.text)
