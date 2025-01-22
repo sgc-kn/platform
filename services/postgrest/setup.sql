@@ -33,11 +33,8 @@ BEGIN
       UNION ALL
       SELECT schema_name
       FROM information_schema.schemata
-    	WHERE schema_name LIKE 'postgrest_%'
-	) subquery;
-	
-	-- Reload config and schemata
-	NOTIFY pgrst;
+      WHERE schema_name LIKE 'postgrest_%'
+    ) subquery;
 END;
 $$ LANGUAGE plpgsql;
 
@@ -62,8 +59,9 @@ BEGIN
         RAISE EXCEPTION 'Transaction failed: %', SQLERRM;
         ROLLBACK;
     END;
-	
-    -- Update config; implicitly reload schema
+
+    -- configure and reload
     PERFORM configure_postgrest();
+    NOTIFY pgrst;
 END;
 $$ LANGUAGE plpgsql;

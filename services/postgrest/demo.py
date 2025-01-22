@@ -22,6 +22,7 @@ def req(*args, **kwargs):
 
 stmts = [
     "DROP SCHEMA IF EXISTS postgrest_ds0 CASCADE",
+    "CREATE SCHEMA postgrest_ds0",
     """
         CREATE TABLE postgrest_ds0.table0 (
           time timestamptz,

@@ -16,9 +16,10 @@ services:
     image: docker.io/postgrest/postgrest:latest
     environment:
       PGRST_DB_URI: "postgres://postgres:noql@postgres:5432/noql"
-      PGRST_DB_SCHEMA: "postgrest"
       PGRST_DB_ANON_ROLE: "postgres"
-      PGRST_DB_EXTRA_SEARCH_PATH: public
+      PGRST_DB_EXTRA_SEARCH_PATH: "public"
+      PGRST_DB_SCHEMA: "postgrest"
+      PGRST_DB_PRE_CONFIG: "postgrest.configure_postgrest"
     ports:
       - "3000:3000"
     depends_on:
