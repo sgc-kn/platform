@@ -1,7 +1,21 @@
 import os
 import subprocess
 import yaml
+from infisical_sdk import InfisicalSDKClient
 
+def infisical_client():
+    if "INFISICAL_CLIENT_ID" not in os.environ:
+        raise RuntimeError("missing environment variable: INFISICAL_CLIENT_ID")
+    if "INFISICAL_CLIENT_SECRET" not in os.environ:
+        raise RuntimeError("missing environment variable: INFISICAL_CLIENT_SECRET")
+
+    client = InfisicalSDKClient(host="https://app.infisical.com")
+    client.auth.universal_auth.login(
+        client_id=os.environ["INFISICAL_CLIENT_ID"], 
+        client_secret=os.environ["INFISICAL_CLIENT_SECRET"],
+    )
+
+    return client
 
 def load():
     ctp = os.path.join(os.path.dirname(__file__), "../secrets/secrets.yaml")
