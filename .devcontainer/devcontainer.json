@@ -1,19 +1,25 @@
 {
+  "build": {
+    "dockerfile": "Dockerfile"
+  },
   "customizations": {
     "vscode": {
       "extensions": [
         "charliermarsh.ruff",
-        "mkhl.direnv",
+        "ms-python.python",
         "ms-toolsai.jupyter"
-      ]
+      ],
+      "settings": {
+        "editor.formatOnSave": true,
+        "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/"
+      }
     }
   },
-  "image": "ghcr.io/cachix/devenv:latest",
-  "overrideCommand": false,
   "secrets": {
     "AGE_SECRET_KEY": {
       "description": "We track some secrets within the git repository. We secure them with SOPS & age. Unlocking the secrets requires a key. Generate your key with `age-keygen`. Add the entire key here, including the `AGE-SECRET-KEY-` prefix."
     }
   },
-  "updateContentCommand": "devenv test"
+  "postCreateCommand": "bash /postCreate.sh",
+  "postAttachCommand": "uv sync"
 }

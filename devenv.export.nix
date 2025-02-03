@@ -34,7 +34,9 @@
   ];
 
   languages.python.enable = true;
-  languages.python.venv.enable = true;
+  languages.python.uv.enable = true;
+  languages.python.uv.package = unstable.uv;
+  # languages.python.uv.sync.enable = true;
 
   scripts.setup.exec = ''
     if [ "$CODESPACES" == "true" ] ; then
