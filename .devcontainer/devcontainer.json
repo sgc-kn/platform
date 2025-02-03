@@ -20,7 +20,6 @@
       "description": "We track some secrets within the git repository. We secure them with SOPS & age. Unlocking the secrets requires a key. Generate your key with `age-keygen`. Add the entire key here, including the `AGE-SECRET-KEY-` prefix."
     }
   },
-  "initializeCommand": "git submodule update --init --recursive",
   "postCreateCommand": "bash /postCreate.sh",
   "postAttachCommand": "uv sync"
 }
