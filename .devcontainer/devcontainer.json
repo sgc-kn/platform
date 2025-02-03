@@ -16,8 +16,11 @@
     }
   },
   "secrets": {
-    "AGE_SECRET_KEY": {
-      "description": "We track some secrets within the git repository. We secure them with SOPS & age. Unlocking the secrets requires a key. Generate your key with `age-keygen`. Add the entire key here, including the `AGE-SECRET-KEY-` prefix."
+    "INFISICAL_CLIENT_ID": {
+      "description": "infisical.com secret manager; client id"
+    },
+    "INFISICAL_CLIENT_SECRET": {
+      "description": "infisical.com secret manager; client secret"
     }
   },
   "postCreateCommand": "bash /postCreate.sh",
