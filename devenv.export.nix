@@ -14,6 +14,10 @@ in
     unstable.just
   ];
 
+  # we load the .env with other means;
+  # the devenv integration leaks secrets into the nix store
+  dotenv.disableHint = true;
+
   languages.python.enable = true;
   languages.python.uv.enable = true;
   languages.python.uv.package = unstable.uv;
