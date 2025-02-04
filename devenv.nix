@@ -1,8 +1,6 @@
 { pkgs, lib, config, inputs, ... }:
 
 {
-  env.PLATFORM_REPO = "./";
-
   # https://devenv.sh/processes/
   processes.dagster = {
     exec = ''

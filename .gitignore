@@ -1,11 +1,9 @@
 data
-secrets/identity
 tmp*
 
 # Python
 *.egg-info
 __pycache__
-venv
 *.ipynb_checkpoints
 
 # Devenv
