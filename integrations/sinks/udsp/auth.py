@@ -1,9 +1,7 @@
 import httpx
 import time
-import json
-import base64
+import os
 from typing import Optional
-from utils import secrets
 
 
 class BearerTokenAuthenticator(httpx.Auth):
@@ -15,7 +13,8 @@ class BearerTokenAuthenticator(httpx.Auth):
         self.auth_url = auth_url
         self.kwargs = kwargs
         self.token: Optional[str] = None
-        self.token_expiry: Optional[int] = None  # Expiration time in UNIX timestamp
+        # Expiration time in UNIX timestamp
+        self.token_expiry: Optional[int] = None
 
     def _fetch_token(self) -> str:
         """
@@ -26,7 +25,8 @@ class BearerTokenAuthenticator(httpx.Auth):
         token_data = response.json()
         token = token_data["access_token"]
         expires_in = token_data["expires_in"]  # Typically seconds until expiry
-        self.token_expiry = int(time.time()) + expires_in - 10  # Buffer of 10 seconds
+        self.token_expiry = int(time.time()) + \
+            expires_in - 10  # Buffer of 10 seconds
         return token
 
     def _is_token_expired(self) -> bool:
@@ -81,12 +81,13 @@ class UDSPApiAuthenticator(httpx.Auth):
         yield self.authenticator.auth_flow(request)
 
 
-def udp_kn_auth():
+def udp_auth():
     return UDSPApiAuthenticator(
-        realm_url="https://idm.udp-kn.de/auth/realms/konstanz",
-        client_id=secrets.get("udp", "client_id"),
-        client_secret=secrets.get("udp", "client_secret"),
-        username=secrets.get("udp", "username"),
-        password=secrets.get("udp", "password"),
+        realm_url=f"https://idm.{os.environ['UDP_DOMAIN']
+                                 }/auth/realms/{os.environ['UDP_IDM_REALM']}",
+        client_id=os.environ['UDP_IDM_CLIENT_ID'],
+        client_secret=os.environ['UDP_IDM_CLIENT_SECRET'],
+        username=os.environ['UDP_USERNAME'],
+        password=os.environ['UDP_PASSWORD'],
         scopes=["read", "write", "delete"],
     )

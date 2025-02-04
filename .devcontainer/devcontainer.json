@@ -15,14 +15,6 @@
       }
     }
   },
-  "secrets": {
-    "INFISICAL_CLIENT_ID": {
-      "description": "infisical.com secret manager; client id"
-    },
-    "INFISICAL_CLIENT_SECRET": {
-      "description": "infisical.com secret manager; client secret"
-    }
-  },
   "postCreateCommand": "bash /postCreate.sh",
   "postAttachCommand": "uv sync"
 }

@@ -14,7 +14,6 @@ dependencies = [
     "dagster>=1.9.11",
     "dagster-webserver>=1.9.11",
     "httpx>=0.28.1",
-    "infisicalsdk>=1.0.3",
     "notebook>=7.3.2",
     "openpyxl>=3.1.5",
     "pandas>=2.2.3",
@@ -37,7 +36,6 @@ code_location_name = "sgc-platform"
 
 [tool.setuptools.packages.find]
 include = [ "integrations.*", "utils*" ]
-
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
