@@ -46,10 +46,10 @@ def read_tables_from_zip(file):
 
             if name.startswith("produkt_"):
                 df = pandas.read_csv(zf.open(name), **kwargs)
-                for c in ["MESS_DATUM"]:
+                for c in ["MESS_DATUM", "MESS_DATUM_BEGINN", "MESS_DATUM_ENDE"]:
                     if c not in df.columns:
                         continue
-                    if int(df[c][0]) <= 999999:
+                    if int(df[c][0]) <= 99999999:
                         df[c] = pandas.to_datetime(df[c], format="%Y%m%d")
                     elif int(df[c][0]) <= 9999999999:
                         df[c] = pandas.to_datetime(df[c], format="%Y%m%d%H")
@@ -69,7 +69,12 @@ def read_tables_from_zip(file):
             if name.startswith("Metadaten_Fehlwerte"):
                 df = pandas.read_csv(zf.open(name), **kwargs, skipfooter=1)
                 for c in ["Von_Datum", "Bis_Datum"]:
-                    df[c] = pandas.to_datetime(df[c], format="%d.%m.%Y-%H:%M")
+                    try:
+                        df[c] = pandas.to_datetime(df[c], format="%d.%m.%Y-%H:%M")
+                    except ValueError:
+                        pass
+
+                    df[c] = pandas.to_datetime(df[c], format="%d.%m.%Y")
                 tables["meta_missing_values"] = df
                 continue
 
@@ -117,7 +122,7 @@ def read_tables_from_zip(file):
         # drop empty columns
         for c in df.columns:
             if c.startswith("Unnamed"):
-                assert df.loc[:, c].isnull().all(), (data, c)
+                assert df.loc[:, c].isnull().all(), (df, c)
                 del df[c]
 
     return tables
