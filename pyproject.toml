@@ -1,5 +1,5 @@
 [project]
-name = "platform"
+name = "sgc-platform"
 version = "0.0.1"
 authors = [
   { name="Patrik Keller", email="patrik.keller@konstanz.de" }
@@ -26,16 +26,13 @@ dev = [
     "pytest>=8.3.4",
 ]
 
-[project.urls]
-Homepage = "https://github.com/sgc-kn/sgc-dagster"
-Issues = "https://github.com/sgc-kn/sgc-dagster/issues"
+[build-system]
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = [ "integrations.*", "utils.*" ]
 
 [tool.dagster]
 module_name = "utils.dagster.definitions"
 code_location_name = "sgc-platform"
-
-[tool.setuptools.packages.find]
-include = [ "integrations.*", "utils*" ]
-
-[tool.pytest.ini_options]
-pythonpath = ["."]
