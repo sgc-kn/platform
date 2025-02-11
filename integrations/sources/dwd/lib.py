@@ -1,8 +1,10 @@
 import html.parser
 import httpx
 import io
+import math
 import pandas
 import zipfile
+from datetime import timedelta
 
 
 class LinkParser(html.parser.HTMLParser):
@@ -26,6 +28,25 @@ def list_zip_files(url, prefix):
     return [x for x in p.links if x.startswith(prefix) and x.endswith(".zip")]
 
 
+def parse_integer_datetime(df, column, *, incr=False):
+    if math.isnan(float(df[column][0])):
+        return pandas.to_datetime([None] * len(df[column]))
+    elif int(df[column][0]) <= 99999999:
+        v = pandas.to_datetime(df[column], format="%Y%m%d")
+        if incr:
+            return v + timedelta(days=1)
+        else:
+            return v
+    elif int(df[column][0]) <= 9999999999:
+        v = pandas.to_datetime(df[column], format="%Y%m%d%H")
+        if incr:
+            return v + timedelta(hours=1)
+        else:
+            return v
+    else:
+        raise ValueError((column, df[column][0]))
+
+
 def read_tables_from_zip(file):
     if isinstance(file, httpx.Response):
         file = io.BytesIO(file.content)
@@ -46,22 +67,22 @@ def read_tables_from_zip(file):
 
             if name.startswith("produkt_"):
                 df = pandas.read_csv(zf.open(name), **kwargs)
-                for c in ["MESS_DATUM", "MESS_DATUM_BEGINN", "MESS_DATUM_ENDE"]:
-                    if c not in df.columns:
-                        continue
-                    if int(df[c][0]) <= 99999999:
-                        df[c] = pandas.to_datetime(df[c], format="%Y%m%d")
-                    elif int(df[c][0]) <= 9999999999:
-                        df[c] = pandas.to_datetime(df[c], format="%Y%m%d%H")
-                    else:
-                        raise ValueError((name, c, df[c][0]))
+                if "MESS_DATUM_BEGINN" in df.columns:
+                    df["MESS_DATUM_BEGINN"] = parse_integer_datetime(
+                        df, "MESS_DATUM_BEGINN")
+                    df["MESS_DATUM_ENDE"] = parse_integer_datetime(
+                        df, "MESS_DATUM_ENDE", incr=True)
+                else:
+                    df["MESS_DATUM"] = parse_integer_datetime(df, "MESS_DATUM")
+
                 tables["data"] = df
                 continue
 
             if name.startswith("Metadaten_Parameter"):
                 df = pandas.read_csv(zf.open(name), **kwargs, skipfooter=2)
-                for c in ["Von_Datum", "Bis_Datum"]:
-                    df[c] = pandas.to_datetime(df[c], format="%Y%m%d")
+                df['Von_Datum'] = parse_integer_datetime(df, 'Von_Datum')
+                df['Bis_Datum'] = parse_integer_datetime(
+                    df, 'Bis_Datum', incr=1)
                 tables["meta_parameter"] = df
 
                 continue
@@ -70,11 +91,16 @@ def read_tables_from_zip(file):
                 df = pandas.read_csv(zf.open(name), **kwargs, skipfooter=1)
                 for c in ["Von_Datum", "Bis_Datum"]:
                     try:
-                        df[c] = pandas.to_datetime(df[c], format="%d.%m.%Y-%H:%M")
+                        df[c] = pandas.to_datetime(
+                            df[c], format="%d.%m.%Y-%H:%M")
+                        if c == "Bis_Datum":
+                            df[c] += timedelta(minutes=1)
                     except ValueError:
                         pass
 
                     df[c] = pandas.to_datetime(df[c], format="%d.%m.%Y")
+                    if c == "Bis_Datum":
+                        df[c] += timedelta(days=1)
                 tables["meta_missing_values"] = df
                 continue
 
@@ -87,10 +113,12 @@ def read_tables_from_zip(file):
             if name.startswith("Metadaten_Geographie"):
                 df = pandas.read_csv(zf.open(name), **kwargs)
                 df = df.rename(
-                    columns={"von_datum": "Von_Datum", "bis_datum": "Bis_Datum"}
+                    columns={"von_datum": "Von_Datum",
+                             "bis_datum": "Bis_Datum"}
                 )
-                for c in ["Von_Datum", "Bis_Datum"]:
-                    df[c] = pandas.to_datetime(df[c], format="%Y%m%d")
+                df['Von_Datum'] = parse_integer_datetime(df, 'Von_Datum')
+                df['Bis_Datum'] = parse_integer_datetime(
+                    df, 'Bis_Datum', incr=True)
                 tables["meta_geo"] = df
                 continue
 
@@ -98,16 +126,19 @@ def read_tables_from_zip(file):
                 lns = zf.open(name).read().splitlines()
                 split_on = lns.index(b"")
 
-                df = pandas.read_csv(zf.open(name), **kwargs, nrows=split_on - 1)
-                for c in ["Von_Datum", "Bis_Datum"]:
-                    df[c] = pandas.to_datetime(df[c], format="%Y%m%d")
+                df = pandas.read_csv(
+                    zf.open(name), **kwargs, nrows=split_on - 1)
+                df['Von_Datum'] = parse_integer_datetime(df, 'Von_Datum')
+                df['Bis_Datum'] = parse_integer_datetime(
+                    df, 'Bis_Datum', incr=True)
                 tables["meta_name"] = df
 
                 df = pandas.read_csv(
                     zf.open(name), **kwargs, skiprows=split_on, skipfooter=1
                 )
-                for c in ["Von_Datum", "Bis_Datum"]:
-                    df[c] = pandas.to_datetime(df[c], format="%Y%m%d")
+                df['Von_Datum'] = parse_integer_datetime(df, 'Von_Datum')
+                df['Bis_Datum'] = parse_integer_datetime(
+                    df, 'Bis_Datum', incr=True)
                 tables["meta_operator"] = df
                 continue
 
@@ -124,5 +155,16 @@ def read_tables_from_zip(file):
             if c.startswith("Unnamed"):
                 assert df.loc[:, c].isnull().all(), (df, c)
                 del df[c]
+
+        # common improvements
+        for c in ['STATIONS_ID', 'Stations_ID', 'Stations_id']:
+            if c in df.columns:
+                df[c] = pandas.to_numeric(df[c], downcast='integer')
+        for c in df.columns:
+            if df[c].dtype == 'O':
+                try:
+                    df[c] = pandas.to_numeric(df[c])
+                except ValueError:
+                    continue
 
     return tables
