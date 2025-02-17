@@ -1,19 +1,19 @@
-DROP TABLE IF EXISTS postgrest_dwd.climate_annual_kl_name CASCADE
-CREATE TABLE postgrest_dwd.climate_annual_kl_name (
+DROP TABLE IF EXISTS postgrest_dwd.raw_climate_annual_kl_name CASCADE;
+CREATE TABLE postgrest_dwd.raw_climate_annual_kl_name (
 "Stations_ID" INTEGER,
   "Stationsname" TEXT,
   "Von_Datum" TIMESTAMP,
   "Bis_Datum" TIMESTAMP
-)
-DROP TABLE IF EXISTS postgrest_dwd.climate_annual_kl_operator CASCADE
-CREATE TABLE postgrest_dwd.climate_annual_kl_operator (
+);
+DROP TABLE IF EXISTS postgrest_dwd.raw_climate_annual_kl_operator CASCADE;
+CREATE TABLE postgrest_dwd.raw_climate_annual_kl_operator (
 "Stations_ID" INTEGER,
   "Betreibername" TEXT,
   "Von_Datum" TIMESTAMP,
   "Bis_Datum" TIMESTAMP
-)
-DROP TABLE IF EXISTS postgrest_dwd.climate_annual_kl_parameter CASCADE
-CREATE TABLE postgrest_dwd.climate_annual_kl_parameter (
+);
+DROP TABLE IF EXISTS postgrest_dwd.raw_climate_annual_kl_parameter CASCADE;
+CREATE TABLE postgrest_dwd.raw_climate_annual_kl_parameter (
 "Stations_ID" INTEGER,
   "Von_Datum" TIMESTAMP,
   "Bis_Datum" TIMESTAMP,
@@ -25,9 +25,9 @@ CREATE TABLE postgrest_dwd.climate_annual_kl_parameter (
   "Zusatz-Info" TEXT,
   "Besonderheiten" REAL,
   "Literaturhinweis" REAL
-)
-DROP TABLE IF EXISTS postgrest_dwd.climate_annual_kl_geo CASCADE
-CREATE TABLE postgrest_dwd.climate_annual_kl_geo (
+);
+DROP TABLE IF EXISTS postgrest_dwd.raw_climate_annual_kl_geo CASCADE;
+CREATE TABLE postgrest_dwd.raw_climate_annual_kl_geo (
 "Stations_id" INTEGER,
   "Stationshoehe" REAL,
   "Geogr.Breite" REAL,
@@ -35,9 +35,9 @@ CREATE TABLE postgrest_dwd.climate_annual_kl_geo (
   "Von_Datum" TIMESTAMP,
   "Bis_Datum" TIMESTAMP,
   "Stationsname" TEXT
-)
-DROP TABLE IF EXISTS postgrest_dwd.climate_annual_kl_missing_values CASCADE
-CREATE TABLE postgrest_dwd.climate_annual_kl_missing_values (
+);
+DROP TABLE IF EXISTS postgrest_dwd.raw_climate_annual_kl_missing_values CASCADE;
+CREATE TABLE postgrest_dwd.raw_climate_annual_kl_missing_values (
 "Stations_ID" INTEGER,
   "Stations_Name" TEXT,
   "Parameter" TEXT,
@@ -45,9 +45,9 @@ CREATE TABLE postgrest_dwd.climate_annual_kl_missing_values (
   "Bis_Datum" TIMESTAMP,
   "Anzahl_Fehlwerte" INTEGER,
   "Beschreibung" REAL
-)
-DROP TABLE IF EXISTS postgrest_dwd.climate_annual_kl CASCADE
-CREATE TABLE postgrest_dwd.climate_annual_kl (
+);
+DROP TABLE IF EXISTS postgrest_dwd.raw_climate_annual_kl_product CASCADE;
+CREATE TABLE postgrest_dwd.raw_climate_annual_kl_product (
 "STATIONS_ID" INTEGER,
   "MESS_DATUM_BEGINN" TIMESTAMP,
   "MESS_DATUM_ENDE" TIMESTAMP,
@@ -64,23 +64,23 @@ CREATE TABLE postgrest_dwd.climate_annual_kl (
   "QN_6" INTEGER,
   "JA_RR" REAL,
   "JA_MX_RS" REAL
-)
-DROP TABLE IF EXISTS postgrest_dwd.climate_annual_climate_indices_kl_name CASCADE
-CREATE TABLE postgrest_dwd.climate_annual_climate_indices_kl_name (
+);
+DROP TABLE IF EXISTS postgrest_dwd.raw_climate_annual_climate_indices_kl_name CASCADE;
+CREATE TABLE postgrest_dwd.raw_climate_annual_climate_indices_kl_name (
 "Stations_ID" INTEGER,
   "Stationsname" TEXT,
   "Von_Datum" TIMESTAMP,
   "Bis_Datum" TIMESTAMP
-)
-DROP TABLE IF EXISTS postgrest_dwd.climate_annual_climate_indices_kl_operator CASCADE
-CREATE TABLE postgrest_dwd.climate_annual_climate_indices_kl_operator (
+);
+DROP TABLE IF EXISTS postgrest_dwd.raw_climate_annual_climate_indices_kl_operator CASCADE;
+CREATE TABLE postgrest_dwd.raw_climate_annual_climate_indices_kl_operator (
 "Stations_ID" INTEGER,
   "Betreibername" TEXT,
   "Von_Datum" TIMESTAMP,
   "Bis_Datum" TIMESTAMP
-)
-DROP TABLE IF EXISTS postgrest_dwd.climate_annual_climate_indices_kl_parameter CASCADE
-CREATE TABLE postgrest_dwd.climate_annual_climate_indices_kl_parameter (
+);
+DROP TABLE IF EXISTS postgrest_dwd.raw_climate_annual_climate_indices_kl_parameter CASCADE;
+CREATE TABLE postgrest_dwd.raw_climate_annual_climate_indices_kl_parameter (
 "Stations_ID" INTEGER,
   "Von_Datum" TIMESTAMP,
   "Bis_Datum" TIMESTAMP,
@@ -92,9 +92,9 @@ CREATE TABLE postgrest_dwd.climate_annual_climate_indices_kl_parameter (
   "Zusatz-Info" TEXT,
   "Besonderheiten" REAL,
   "Literaturhinweis" REAL
-)
-DROP TABLE IF EXISTS postgrest_dwd.climate_annual_climate_indices_kl_geo CASCADE
-CREATE TABLE postgrest_dwd.climate_annual_climate_indices_kl_geo (
+);
+DROP TABLE IF EXISTS postgrest_dwd.raw_climate_annual_climate_indices_kl_geo CASCADE;
+CREATE TABLE postgrest_dwd.raw_climate_annual_climate_indices_kl_geo (
 "Stations_id" INTEGER,
   "Stationshoehe" REAL,
   "Geogr.Breite" REAL,
@@ -102,9 +102,9 @@ CREATE TABLE postgrest_dwd.climate_annual_climate_indices_kl_geo (
   "Von_Datum" TIMESTAMP,
   "Bis_Datum" TIMESTAMP,
   "Stationsname" TEXT
-)
-DROP TABLE IF EXISTS postgrest_dwd.climate_annual_climate_indices_kl CASCADE
-CREATE TABLE postgrest_dwd.climate_annual_climate_indices_kl (
+);
+DROP TABLE IF EXISTS postgrest_dwd.raw_climate_annual_climate_indices_kl_product CASCADE;
+CREATE TABLE postgrest_dwd.raw_climate_annual_climate_indices_kl_product (
 "STATIONS_ID" INTEGER,
   "MESS_DATUM_BEGINN" TIMESTAMP,
   "MESS_DATUM_ENDE" TIMESTAMP,
