@@ -1,13 +1,15 @@
+import importlib
+import os
+from .registry import registry
+from .resources import resources
+
+
 ## We could import the relevant modules manually like this:
 
 # from integrations.sources.lubw import incremental_sync_job
 # from integrations.sources.lubw import monthly_asset
 
 ## Instead we search and import the modules automatically
-
-import importlib
-import os
-
 
 def is_dagster_module(path):
     with open(path, "r", encoding="utf-8") as f:
@@ -59,6 +61,4 @@ import_dagster_modules("integrations")
 
 ## The imported modules have registered themselves
 
-from .registry import registry
-
-defs = registry.definitions()
+defs = registry.definitions(resources = resources)

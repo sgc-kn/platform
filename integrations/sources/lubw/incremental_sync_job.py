@@ -1,5 +1,4 @@
 from . import lib
-from utils import secrets
 from integrations.sinks.udsp import quantumleap
 from dagster import graph, job, op
 from dagster import DynamicOut, DynamicOutput
