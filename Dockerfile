@@ -12,4 +12,4 @@ WORKDIR /repo/
 
 # create and activate virtual environment
 RUN uv sync --frozen
-ENV PATH="/app/.venv/bin:$PATH"
+ENV PATH="/repo/.venv/bin:$PATH"
