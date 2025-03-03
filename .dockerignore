@@ -1,1 +1,25 @@
 .git
+Dockerfile
+
+# .gitignore
+
+data
+tmp*
+
+# Python
+*.egg-info
+__pycache__
+*.ipynb_checkpoints
+
+# Devenv
+.devenv*
+devenv.local.nix
+
+# direnv
+.direnv
+
+# pre-commit
+.pre-commit-config.yaml
+
+# dotenv / secrets
+.env
