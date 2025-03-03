@@ -31,7 +31,9 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 RUN --mount=type=cache,target=/root/.cache/uv \
   uv add dagster dagster-k8s dagster-postgres
 
-# Activate environment
-ENV PATH="/repo/.venv/bin:$PATH"
+CMD [ "uv", "run", \
+      "dagster", "api", "grpc", \
+      "--port", "80", \
+      "-m", "utils.dagster.definitions" ]
 
-CMD ["python"]
+EXPOSE 80
