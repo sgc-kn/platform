@@ -31,8 +31,10 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 RUN --mount=type=cache,target=/root/.cache/uv \
   uv add dagster dagster-k8s dagster-postgres
 
-CMD [ "uv", "run", \
-      "dagster", "api", "grpc", \
+# Activate virtual environment
+ENV PATH="/repo/.venv/bin:$PATH"
+
+CMD [ "dagster", "api", "grpc", \
       "--port", "80", \
       "-m", "utils.dagster.definitions" ]
 
