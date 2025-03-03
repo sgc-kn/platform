@@ -35,7 +35,6 @@ RUN --mount=type=cache,target=/root/.cache/uv \
 ENV PATH="/repo/.venv/bin:$PATH"
 
 CMD [ "dagster", "api", "grpc", \
-      "--host", "0.0.0.0", \
       "--port", "80", \
       "-m", "utils.dagster.definitions" ]
 
