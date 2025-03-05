@@ -462,11 +462,6 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/ba/a6/fd423068106e0439f728ab299cb1edf9400225af5638babe6a8d722131aa/dagster_webserver-1.10.1-py3-none-any.whl", hash = "sha256:832ffc6ad532eff27417ebe67bffd5f6c15612ca40f4d3048e19168f13b28d44", size = 12192942 },
 ]
 
-[package.optional-dependencies]
-notebook = [
-    { name = "nbconvert" },
-]
-
 [[package]]
 name = "dagstermill"
 version = "0.26.1"
@@ -2099,7 +2094,7 @@ version = "0.0.1"
 source = { editable = "." }
 dependencies = [
     { name = "dagster" },
-    { name = "dagster-webserver", extra = ["notebook"] },
+    { name = "dagster-webserver" },
     { name = "dagstermill" },
     { name = "httpx" },
     { name = "notebook" },
@@ -2117,7 +2112,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "dagster", specifier = ">=1.9.11" },
-    { name = "dagster-webserver", extras = ["notebook"], specifier = ">=1.9.11" },
+    { name = "dagster-webserver", specifier = ">=1.9.11" },
     { name = "dagstermill", specifier = ">=0.25.11" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "notebook", specifier = ">=7.3.2" },
