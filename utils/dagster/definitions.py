@@ -1,7 +1,6 @@
 import importlib
 import os
 from .registry import registry
-from .resources import resources
 
 
 ## We could import the relevant modules manually like this:
@@ -61,4 +60,4 @@ import_dagster_modules("integrations")
 
 ## The imported modules have registered themselves
 
-defs = registry.definitions(resources = resources)
+defs = registry.definitions()
