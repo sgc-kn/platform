@@ -13,30 +13,27 @@ WORKDIR /repo
 # Make sure that logs show up immediately
 ENV PYTHONUNBUFFERED=1
 
-# Install dependencies
 ENV UV_LINK_MODE=copy
 ENV UV_COMPILE_BYTECODE=1
-ADD pyproject.toml uv.lock /repo/
+
+# Install dependencies
+COPY pyproject.toml uv.lock /repo/
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-install-project --no-dev
 
-# Copy entire repository
-ADD . /repo
+# Copy code
+COPY integrations /repo/integrations
+COPY test /repo/test
+COPY utils /repo/utils
 
-# Install project itself
+# Install project itself & additional dependencies
 RUN --mount=type=cache,target=/root/.cache/uv \
+  uv add dagster-k8s dagster-postgres && \
   uv sync --no-dev --frozen
-
-# Install additional dependencies for k8s deployment
-RUN --mount=type=cache,target=/root/.cache/uv \
-  uv add dagster dagster-k8s dagster-postgres
 
 # Activate virtual environment
 ENV PATH="/repo/.venv/bin:$PATH"
 
-CMD [ "dagster", "api", "grpc", \
-      "--host", "0.0.0.0", \
-      "--port", "80", \
-      "-m", "utils.dagster.definitions" ]
+CMD ["bash", "utils/dagster/code-location.sh"]
 
 EXPOSE 80
