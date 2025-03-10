@@ -26,6 +26,7 @@ jobs:
 
       - name: Extract version
         id: version
+        shell: bash  # adds -o pipefail
         run: echo "VERSION_ID=$(./utils/version.sh)" >> $GITHUB_ENV
 
       - name: Log in to the Container registry
