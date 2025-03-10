@@ -9,6 +9,8 @@ set -euo pipefail
 # - we append the git hash as version metadata, separated by a plus sign
 # - if we are off the main branch append ('.dev')
 # - if there are uncommitted changes append ('.wip')
+#
+# To bump the version number run `git tag v[MAJOR].[MINOR] -a` and push.
 
 description=$(git describe --long --abbrev=8 --match 'v[0-9]*.[0-9]*')
 re='^v([0-9]+)\.([0-9]+)-([0-9]+)-g([0-9a-f]+)$'
