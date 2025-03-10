@@ -22,12 +22,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
+          # fetch-tags: true
           lfs: true
 
       - name: Extract version
         id: version
-        shell: bash -eo pipefail
-        run: echo "VERSION_ID=$(./utils/version.sh)" >> $GITHUB_ENV
+        shell: bash
+        run: |
+          set -euo pipefail # why is this not the default?
+          echo "VERSION_ID=$(./utils/version.sh)" >> $GITHUB_ENV
 
       - name: Log in to the Container registry
         uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
