@@ -29,7 +29,8 @@ jobs:
       - name: Extract version
         id: version
         run: |
-          VERSION_ID=$(./utils/version.sh)  # separate line to abort on fail
+          VERSION_ID=$(./utils/version.sh | tr '+' '-')
+          # command on separate line to abort on fail
           echo "VERSION_ID=${VERSION_ID}" >> $GITHUB_ENV
 
       - name: Log in to the Container registry
