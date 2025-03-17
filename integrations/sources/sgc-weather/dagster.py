@@ -40,11 +40,8 @@ def evaluate_and_convert_notebook(src, dst):
     if not success:
         raise RuntimeError("notebook evaluation failed. Find partially rendered notebook at: " + dst)
 
-@dagster.asset(
-        group_name = 'sgc_weather',
-        name = 'raw_tti_messages_v0',
-        )
-def notebook():
+@dagster.asset()
+def sgc_weather_raw_tti_messages_v0():
     name = "sync-raw-tti-messages-v0"
     src = dagster.file_relative_path(__file__, name + ".ipynb")
     dst = dagster.file_relative_path(__file__, name + ".html")
@@ -57,15 +54,19 @@ def notebook():
     )
 
 job = dagster.define_asset_job(
-        "sgc_weather_sync_raw_tti_messages_v0", selection=[notebook]
+        "sgc_weather_raw_tti_messages_v0_job",
+        selection=['sgc_weather_raw_tti_messages_v0']
 )
 
 schedule = dagster.ScheduleDefinition(
         job=job,
         cron_schedule="27 * * * *", # once per hour at xx:27
-        default_status=dagster.DefaultScheduleStatus.RUNNING,
         )
 
 from utils.dagster import registry as dagster_registry
 
-dagster_registry.register(assets=[notebook], jobs=[job], schedules=[schedule])
+dagster_registry.register(
+        assets=[sgc_weather_raw_tti_messages_v0],
+        jobs=[job],
+        schedules=[schedule]
+        )
