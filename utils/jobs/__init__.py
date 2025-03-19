@@ -31,9 +31,7 @@ def _job_definitions(
     dg_jobs = []
     dg_schedules = []
 
-    @dagster.asset(name=dg_name)
-    def asset(context):
-        return func(context)
+    asset = dagster.asset(name=dg_name)(func)
     dg_assets.append(asset)
 
     if cron_schedule is not None:
