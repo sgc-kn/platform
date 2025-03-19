@@ -33,7 +33,7 @@ def _job_definitions(
 
     @dagster.asset(name=dg_name)
     def asset(context):
-        return func()
+        return func(context)
     dg_assets.append(asset)
 
     if cron_schedule is not None:
@@ -64,7 +64,7 @@ def job(*args, **kwargs):
 
 ## Additional wrapper schedule the evaluation of notebooks
 
-def _evaluate_notebook(infile, outfile):
+def _evaluate_notebook(infile, outfile, context):
     # evaluate notebook infile (path), store result in outfile (path)
     # return true if the notebook evaluated alright, false otherwise
     prc = subprocess.Popen(
@@ -79,13 +79,13 @@ def _evaluate_notebook(infile, outfile):
             text = True,
             )
 
-    # sys.stderr is captured by dagster; subprocess.STDERR not
+    # sys.stderr is not captured by dagster on k8s
     for ln in prc.stdout:
-        print(ln, file=sys.stderr)
+        context.log.info(ln)
 
     prc.communicate() # wait for returncode
     if prc.returncode > 0:
-        print('return code:', prc.returncode, file=sys.stderr)
+        context.log.error(f'papermill return code: {prc.returncode}')
         return False
     else:
         return True
@@ -99,13 +99,13 @@ def _convert_notebook(ipynb):
                     ipynb
                     ], check=True)
 
-def _evaluate_and_convert_notebook(src, dst):
+def _evaluate_and_convert_notebook(src, dst, context):
     basename = os.path.basename(src)
     htmlname = os.path.splitext(basename)[0] + '.html'
     with tempfile.TemporaryDirectory() as tmp:
         tmpipynb = f'{tmp}/{basename}'
         tmphtml = f'{tmp}/{htmlname}'
-        success = _evaluate_notebook(src, tmpipynb)
+        success = _evaluate_notebook(src, tmpipynb, context)
 
         _convert_notebook(tmpipynb)
         shutil.move(tmphtml, dst) # TODO persist this on S3
@@ -113,11 +113,11 @@ def _evaluate_and_convert_notebook(src, dst):
     if not success:
         raise RuntimeError("notebook evaluation failed. Find partially rendered notebook at: " + dst)
 
-def run_notebook(notebook: str, *, relative_to: str):
+def run_notebook(notebook: str, *, relative_to: str, context):
     name = notebook.removesuffix('.ipynb')
     src = dagster.file_relative_path(relative_to, name + ".ipynb")
     dst = dagster.file_relative_path(relative_to, name + ".html")
-    _evaluate_and_convert_notebook(src, dst)
+    _evaluate_and_convert_notebook(src, dst, context)
 
 
 
