@@ -63,10 +63,12 @@ schedule = dagster.ScheduleDefinition(
         cron_schedule="27 * * * *", # once per hour at xx:27
         )
 
-from utils.dagster import registry as dagster_registry
-
-dagster_registry.register(
+defs = dagster.Definitions(
         assets=[sgc_weather_raw_tti_messages_v0],
         jobs=[job],
         schedules=[schedule]
         )
+
+from utils.dagster import registry as dagster_registry
+
+dagster_registry.register(defs)

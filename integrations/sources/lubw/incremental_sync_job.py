@@ -4,6 +4,7 @@ from dagster import graph, job, op
 from dagster import DynamicOut, DynamicOutput
 from dagster import RetryPolicy, Jitter, Backoff
 from dagster import ScheduleDefinition, DefaultScheduleStatus
+from dagster import Definitions
 from datetime import datetime, timedelta, timezone
 import dateutil
 
@@ -112,6 +113,8 @@ schedule = ScheduleDefinition(
     #  default_status=DefaultScheduleStatus.RUNNING,
 )
 
+defs = Definitions(jobs=[job], schedules=[schedule])
+
 from utils.dagster import registry as dagster_registry
 
-dagster_registry.register(jobs=[job], schedules=[schedule])
+dagster_registry.register(defs)

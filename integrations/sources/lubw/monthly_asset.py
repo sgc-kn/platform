@@ -5,6 +5,7 @@ from dagster import MultiPartitionsDefinition
 from dagster import RetryPolicy, Jitter, Backoff
 from dagster import StaticPartitionsDefinition
 from dagster import graph_asset, op
+from dagster import Definitions
 from datetime import datetime, timedelta, timezone
 from typing import Any
 import pandas
@@ -99,6 +100,8 @@ def asset():
     return save(df)
 
 
+defs = Definitions(assets=[asset])
+
 from utils.dagster import registry as dagster_registry
 
-dagster_registry.register(assets=[asset])
+dagster_registry.register(defs)
