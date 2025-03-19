@@ -37,7 +37,7 @@ def _job_definitions(
 
     if cron_schedule is not None:
         job = dagster.define_asset_job(
-                f"{name}_job",
+                f"{dg_name}_job",
                 selection = [dg_name]
                 )
         dg_jobs.append(job)
