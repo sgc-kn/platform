@@ -4,6 +4,7 @@ import dagster
 import os
 import shutil
 import subprocess
+import sys
 import tempfile
 
 # Thin wrapper around dagster assets, jobs, and schedules to enable
@@ -66,15 +67,28 @@ def job(*args, **kwargs):
 def _evaluate_notebook(infile, outfile):
     # evaluate notebook infile (path), store result in outfile (path)
     # return true if the notebook evaluated alright, false otherwise
-    try:
-        subprocess.run(['papermill',
-                        infile,
-                        outfile,
-                        '--log-output',
-                        ], check=True)
-        return True
-    except subprocess.CalledProcessError:
+    prc = subprocess.Popen(
+            [
+                'papermill',
+                infile,
+                outfile,
+                '--log-output',
+                ],
+            stdout = subprocess.PIPE,
+            stderr = subprocess.STDOUT,
+            text = True,
+            )
+
+    # sys.stderr is captured by dagster; subprocess.STDERR not
+    for ln in prc.stdout:
+        print(ln, file=sys.stderr)
+
+    prc.communicate() # wait for returncode
+    if prc.returncode > 0:
+        print('return code:', prc.returncode, file=sys.stderr)
         return False
+    else:
+        return True
 
 def _convert_notebook(ipynb):
     # render notebook ipynb (path) into html file, changing the extension from
