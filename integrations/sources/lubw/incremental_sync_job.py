@@ -1,3 +1,5 @@
+# platform: load=false
+
 from . import lib
 from integrations.sinks.udsp import quantumleap
 from dagster import graph, job, op

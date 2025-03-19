@@ -9,11 +9,12 @@ from .registry import registry
 # from integrations.sources.lubw import monthly_asset
 
 ## Instead we search and import the modules automatically
+## TODO Move the load logic to utils.jobs
 
 def is_dagster_module(path):
     with open(path, "r", encoding="utf-8") as f:
-        content = f.read()
-        return "dagster_registry.register(" in content
+        ln = f.readline()
+        return "platform: load=true" in ln
 
 
 def find_dagster_modules(package):

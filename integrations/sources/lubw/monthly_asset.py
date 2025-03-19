@@ -1,3 +1,5 @@
+# platform: load=false
+
 from . import lib
 from dagster import DynamicOut, DynamicOutput
 from dagster import MonthlyPartitionsDefinition
