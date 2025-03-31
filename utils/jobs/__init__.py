@@ -14,10 +14,18 @@ import tempfile
 # def hello():
 #     print('hello')
 #
+# The dagster schedules are enables automatically, based on the environment
+# variable ENABLE_ALL_SCHEDULES
+#
 # I'm aware that this might lead to reproducing functionality redundant with
 # dagster. My intention is to make all our job definitions orthogonal to the
 # choice of orchestrator. In other words, the redundancy is added to simplify
 # replacing dagster in the future if need be.
+
+if 'ENABLE_ALL_SCHEDULES' in os.environ:
+    schedule_status = dagster.DefaultScheduleStatus.RUNNING
+else:
+    schedule_status = dagster.DefaultScheduleStatus.STOPPED
 
 def _job_definitions(
         func: Callable,
@@ -42,8 +50,10 @@ def _job_definitions(
         dg_jobs.append(job)
 
         schedule = dagster.ScheduleDefinition(
+                name = f"{dg_name}_schedule",
                 job = job,
                 cron_schedule = cron_schedule,
+                default_status = schedule_status,
                 )
         dg_schedules.append(schedule)
 
