@@ -1,4 +1,4 @@
-# platform: load=false
+# platform: load=true
 
 from . import lib
 from dagster import DynamicOut, DynamicOutput
@@ -11,7 +11,6 @@ from dagster import Definitions
 from datetime import datetime, timedelta, timezone
 from typing import Any
 import pandas
-import os
 
 partition = MonthlyPartitionsDefinition(
     start_date="2008-01-01",
@@ -19,10 +18,7 @@ partition = MonthlyPartitionsDefinition(
     end_offset=1,  # include running month
 )
 
-scope = "slh"  # sources/lubw/historic
-
-
-@op(name="batches_" + scope, out=DynamicOut(tuple[lib.Component, datetime, datetime]))
+@op(out=DynamicOut(tuple[lib.Component, datetime, datetime]))
 def batches(context):
     # lubw returns at most 100 measurements per request
     # we're requesting hourly data
@@ -33,6 +29,10 @@ def batches(context):
 
     # first day of next month
     end = (start + timedelta(days=32)).replace(day=1)
+
+    # cap this on current datetime
+    now = datetime.now(timezone.utc)
+    end = min(end, now)
 
     n = 0
     step = timedelta(hours=100)
@@ -52,7 +52,6 @@ def batches(context):
 
 
 @op(
-    name="get_" + scope,
     retry_policy=RetryPolicy(
         max_retries=7,
         delay=2,
@@ -63,11 +62,7 @@ def batches(context):
 def get(context, batch: tuple[lib.Component, datetime, datetime]):
     component, start, end = batch
 
-    # this should probably be a dagster resource?
-    lubw = lib.Client(
-        username=secrets.get("lubw", "username"),
-        password=secrets.get("lubw", "password"),
-    )
+    lubw = lib.Client()
 
     data = lubw.get(component, start, end)
 
@@ -78,31 +73,26 @@ def get(context, batch: tuple[lib.Component, datetime, datetime]):
     return (component, data)
 
 
-@op
-def dataframe(context, batched_data) -> pandas.DataFrame:
+def dataframe(batched_data) -> pandas.DataFrame:
     dfs = [lib.dataframe(c, d) for c, d in batched_data if len(d["messwerte"]) > 0]
     df = pandas.concat(dfs)
-    df.info()
     return df
 
 
 @op
-def save(context, df: pandas.DataFrame) -> None:
-    dname = "data/sources/lubw"
-    fname = dname + "/monthly_"
-    fname += context.partition_key
-    fname += ".csv"
-    os.makedirs(dname, exist_ok=True)
-    df.to_csv(fname, index=False)
+def upload(context, batched_data):
+    df = dataframe(batched_data)
+    context.log.info(f'uploading {len(df)} rows')
+    lib.delta_upload(df)
 
 
-@graph_asset(name="sources_lubw_monthly", partitions_def=partition)
-def asset():
-    df = dataframe(batches().map(get).collect())
-    return save(df)
+@graph_asset(partitions_def=partition)
+def lubw_backfill():
+    batched_data = batches().map(get).collect()
+    return upload(batched_data)
 
 
-defs = Definitions(assets=[asset])
+defs = Definitions(assets=[lubw_backfill])
 
 from utils.dagster import registry as dagster_registry
 

@@ -1,9 +1,12 @@
 from dataclasses import dataclass
 from datetime import datetime, timezone
 import dateutil.parser
+import deltalake
 import httpx
 import pandas
+import pyarrow
 import urllib
+import os
 
 lubw_url = "https://mersyzentrale.de/www/Datenweitergabe/Konstanz/data.php"
 lubw_start_date = datetime(1990, 9, 4, 0, 0)
@@ -24,8 +27,11 @@ components = [o3, no2, pm10, pm25]
 
 
 class Client:
-    def __init__(self, *args, username: str, password: str):
-        auth = httpx.DigestAuth(username=username, password=password)
+    def __init__(self, *args):
+        auth = httpx.DigestAuth(
+                username=os.environ['LUBW_USER'],
+                password=os.environ['LUBW_PASSWORD'],
+                )
         self._httpx = httpx.Client(auth=auth)
 
     def params(self, component: Component, start: datetime, end: datetime):
@@ -113,3 +119,22 @@ def dataframe(*args):
     df = df.assign(startZeit=pandas.to_datetime(df.startZeit, utc=True))
     df = df.assign(endZeit=pandas.to_datetime(df.endZeit, utc=True))
     return df
+
+
+delta_table = f's3://{os.environ['S3_DATA_BUCKET']}/'
+delta_table += 'lubw/measurements-v0'
+delta_storage_options = {
+    'access_key_id': os.environ['S3_DATA_KEY_ID'],
+    'secret_access_key': os.environ['S3_DATA_SECRET'],
+    'endpoint': os.environ['S3_DATA_ENDPOINT'],
+}
+
+
+def delta_upload(df):
+    arrow = pyarrow.Table.from_pandas(df, preserve_index=False)
+    deltalake.write_deltalake(
+        delta_table,
+        arrow,
+        mode="append",
+        storage_options = delta_storage_options
+    )

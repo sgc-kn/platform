@@ -1,3 +1,6 @@
+NOTE: This description is out of date. I'm working on uploading the data
+to delta lake instead of QuantumLeap.
+
 ## Context
 
 I've used this to sync the historic lubw data. The data is now updated
