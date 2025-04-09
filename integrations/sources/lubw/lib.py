@@ -1,5 +1,6 @@
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
+from tqdm import tqdm
 import dateutil.parser
 import deltalake
 import httpx
@@ -27,12 +28,13 @@ components = [o3, no2, pm10, pm25]
 
 
 class Client:
-    def __init__(self, *args):
+    def __init__(self, *args, retries=1):
         auth = httpx.DigestAuth(
                 username=os.environ['LUBW_USER'],
                 password=os.environ['LUBW_PASSWORD'],
                 )
-        self._httpx = httpx.Client(auth=auth)
+        trsp = httpx.HTTPTransport(retries=retries)
+        self._httpx = httpx.Client(auth=auth, transport=trsp)
 
     def params(self, component: Component, start: datetime, end: datetime):
         return dict(
@@ -48,7 +50,6 @@ class Client:
             headers=dict(Accept="application/json"),
             timeout=30,  # default 5s was too small
         )
-        r.raise_for_status()
         return r.json()
 
     def get(self, *args, **kwargs):
@@ -71,55 +72,23 @@ def start_end_of_nextLink(lnk):
     return start_end_of_params(params_of_nextLink(lnk))
 
 
-def raw_entity_id(component):
-    return f"urn:raw:lubw:konstanz:{component.name}"
+def time_batches(start, end):
+    n = 0
+    step = timedelta(hours=100)
+    b_start = start
+    b_end = b_start + step
+    while b_start < end:
+        yield (b_start, min(end, b_end))
+        b_start += step
+        b_end += step
+        n += 1
 
-
-def entity_updates_gen(component, lubw_json):
-    raw_id = raw_entity_id(component)
-    now = datetime.now(timezone.utc).isoformat()
-    for mw in sorted(lubw_json["messwerte"], key=lambda x: x["startZeit"]):
-        if mw["wert"] is None:
-            continue
-        else:
-            yield dict(
-                id=raw_id,
-                type="raw_lubw",
-                time_index=dict(value=mw["startZeit"]),
-                dateProcessed=dict(value=now),
-                startZeit=dict(value=mw["startZeit"]),
-                endZeit=dict(value=mw["endZeit"]),
-                wert=dict(value=mw["wert"]),
-                station=dict(value=lubw_json["station"], type="TextUnrestricted"),
-                komponente=dict(value=lubw_json["komponente"], type="TextUnrestricted"),
-            )
-
-
-def entity_updates(*args):
-    return list(entity_updates_gen(*args))
-
-
-def row_gen(component, lubw_json):
-    for mw in sorted(lubw_json["messwerte"], key=lambda x: x["startZeit"]):
-        if mw["wert"] is None:
-            continue
-        else:
-            yield dict(
-                station=lubw_json["station"],
-                startZeit=mw["startZeit"],
-                endZeit=mw["endZeit"],
-                component=component.name,
-                component_human=lubw_json["komponente"],
-                wert=mw["wert"],
-            )
-
-
-def dataframe(*args):
-    df = pandas.DataFrame(row_gen(*args))
-    df = df.assign(startZeit=pandas.to_datetime(df.startZeit, utc=True))
-    df = df.assign(endZeit=pandas.to_datetime(df.endZeit, utc=True))
-    return df
-
+def component_time_batches(*args):
+    for (start, end) in time_batches(*args):
+        for c in components:
+            yield (c, start, end)
+    
+### Delta Table
 
 delta_table = f's3://{os.environ['S3_DATA_BUCKET']}/'
 delta_table += 'lubw/measurements-v0'
@@ -130,11 +99,56 @@ delta_storage_options = {
 }
 
 
-def delta_upload(df):
+def load_measurements(start, end, *, progress=True):
+    batches = component_time_batches(start, end)
+    batches = list(batches)
+    if progress:
+        batches = tqdm(batches)
+    
+    client = Client(retries=7)
+    data = { c: [] for c in components }
+
+    for (component, b_start, b_end) in batches:
+        json = client.get(component, b_start, b_end)
+        data[component].extend(json['messwerte'])
+
+    return data
+
+
+def build_dataframe(data):
+    columns = dict()
+    for component in components:
+        messwerte = data[component]
+        df = pandas.DataFrame(messwerte)
+        df = df.assign(startZeit=pandas.to_datetime(df.startZeit, utc=True))
+        df = df.assign(endZeit=pandas.to_datetime(df.endZeit, utc=True))
+
+        # avoid merging on multi-index; endZeit is redundant; drop here + restore later
+        assert all(df.startZeit + timedelta(hours = 1) == df.endZeit)
+        del df['endZeit']
+        
+        series = df.set_index('startZeit').wert
+        series = series.dropna()
+        
+        columns[component.name] = series
+
+    df = pandas.concat(columns, axis=1).reset_index()
+
+    # restore endZeit
+    df['endZeit'] = df.startZeit + timedelta(hours = 1)
+    
+    # reorder columns
+    df = df.reindex(columns = ['startZeit', 'endZeit'] + list(columns.keys()))
+    
+    return df 
+
+
+def upload_dataframe(df, *, mode="append", schema_mode="merge"):
     arrow = pyarrow.Table.from_pandas(df, preserve_index=False)
     deltalake.write_deltalake(
         delta_table,
         arrow,
-        mode="append",
+        mode=mode,
+        schema_mode=schema_mode,
         storage_options = delta_storage_options
     )
