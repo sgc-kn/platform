@@ -75,11 +75,13 @@ def job(*args, **kwargs):
 def _evaluate_notebook(infile, outfile, context):
     # evaluate notebook infile (path), store result in outfile (path)
     # return true if the notebook evaluated alright, false otherwise
+    srcdir = os.path.dirname(infile)
     prc = subprocess.Popen(
             [
                 'papermill',
                 infile,
                 outfile,
+                '--cwd', srcdir, # change working directory like jupyter nb/lab
                 '--log-output',
                 ],
             stdout = subprocess.PIPE,
@@ -126,7 +128,3 @@ def run_notebook(notebook: str, *, relative_to: str, context):
     src = dagster.file_relative_path(relative_to, name + ".ipynb")
     dst = dagster.file_relative_path(relative_to, name + ".html")
     _evaluate_and_convert_notebook(src, dst, context)
-
-
-
-
