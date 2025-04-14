@@ -100,6 +100,9 @@ delta_storage_options = {
     'endpoint': os.environ['S3_DATA_ENDPOINT'],
 }
 
+def deltatable():
+    return deltalake.DeltaTable(delta_table, storage_options = delta_storage_options)
+
 
 def load_measurements(start, end, *, progress=True):
     batches = component_time_batches(start, end)
@@ -145,12 +148,20 @@ def build_dataframe(data):
     return df 
 
 
-def upload_dataframe(df, *, mode="append", schema_mode="merge"):
+def upload_dataframe(df, *, mode="append", schema_mode="merge", dt=None):
     arrow = pyarrow.Table.from_pandas(df, preserve_index=False)
-    deltalake.write_deltalake(
-        delta_table,
-        arrow,
-        mode=mode,
-        schema_mode=schema_mode,
-        storage_options = delta_storage_options
-    )
+    if dt is None:
+        deltalake.write_deltalake(
+            delta_table,
+            arrow,
+            mode=mode,
+            schema_mode=schema_mode,
+            storage_options = delta_storage_options
+        )
+    else:
+        deltalake.write_deltalake(
+            dt,
+            arrow,
+            mode=mode,
+            schema_mode=schema_mode,
+        )

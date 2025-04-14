@@ -15,8 +15,8 @@ def historic_measurements(context):
                  relative_to=__file__,
                  context=context)
 
-# @job(group='lubw', cron_schedule="17 5 * * *") # sunday 05:17
-# def maintenance(context):
-#     run_notebook("maintain-tables",
-#                  relative_to=__file__,
-#                  context=context)
+@job(group='lubw', cron_schedule="17 5 * * sun") # sunday 05:17
+def maintenance(context):
+    run_notebook("maintain-delta-table",
+                 relative_to=__file__,
+                 context=context)
