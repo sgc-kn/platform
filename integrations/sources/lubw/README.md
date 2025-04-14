@@ -1,7 +1,7 @@
 Datenquelle
 - LUBW Luftqualitätsmessung Station Konstanz
 - CO2, Ozon (02), Stickstoffdioxid (NO2), Schwebstoffe (PM2.5, PM10)
-- https://mersyzentrale.de/www/Datenweitergabe/Konstanz/Schnittstellen-Dokumentation.pdf
+- https://mersyzentrale.lubw.de/www/Datenweitergabe/Konstanz/Schnittstellen-Dokumentation.pdf
 - 100 Datenpunkte pro HTTP Request
 
 Vorgehen

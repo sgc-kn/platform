@@ -9,7 +9,7 @@ import pyarrow
 import urllib
 import os
 
-lubw_url = "https://mersyzentrale.de/www/Datenweitergabe/Konstanz/data.php"
+lubw_url = "https://mersyzentrale.lubw.de/www/Datenweitergabe/Konstanz/data.php"
 lubw_start_date = datetime(1990, 9, 4, 0, 0)
 
 
