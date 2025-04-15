@@ -136,7 +136,7 @@ def _evaluate_and_convert_notebook(src, dst, context, parameters):
     if not success:
         raise RuntimeError("notebook evaluation failed. Find partially rendered notebook at: " + dst)
 
-def run_notebook(notebook: str, *, relative_to: str, context, parameters):
+def run_notebook(notebook: str, *, relative_to: str, context, parameters=None):
     name = notebook.removesuffix('.ipynb')
     src = dagster.file_relative_path(relative_to, name + ".ipynb")
     dst = dagster.file_relative_path(relative_to, name + ".html")
