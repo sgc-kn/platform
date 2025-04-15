@@ -6,6 +6,7 @@ import deltalake
 import httpx
 import pandas
 import pyarrow
+import pytz
 import urllib
 import os
 
@@ -14,6 +15,10 @@ lubw_url = lubw_baseurl + "data.php"
 lubw_documentation = lubw_baseurl + "Schnittstellen-Dokumentation.pdf"
 lubw_start_date = datetime(1990, 9, 4, 0, 0)
 
+MEZ = pytz.timezone('CET')
+
+def is_timezone_aware(dt):
+    return dt.tzinfo is not None and dt.utcoffset() is not None
 
 @dataclass(frozen=True)
 class Component:
@@ -29,6 +34,8 @@ pm25 = Component("pm25", "PM2,5")
 components = [o3, no2, pm10, pm25]
 
 
+
+
 class Client:
     def __init__(self, *args, retries=1):
         auth = httpx.DigestAuth(
@@ -39,6 +46,15 @@ class Client:
         self._httpx = httpx.Client(auth=auth, transport=trsp)
 
     def params(self, component: Component, start: datetime, end: datetime):
+        if not is_timezone_aware(start):
+            raise ValueError("start must be timezone aware")
+        if not is_timezone_aware(end):
+            raise ValueError("end must be timezone aware")
+
+        # API expects MEZ times w/o timezone
+        start = start.astimezone(MEZ).replace(tzinfo=None)
+        end = end.astimezone(MEZ).replace(tzinfo=None)
+        
         return dict(
             komponente=component.remote,
             von=start.isoformat(),

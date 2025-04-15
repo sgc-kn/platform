@@ -33,13 +33,17 @@ def _job_definitions(
         name: str,
         group: str,
         cron_schedule: Optional[str] = None,
+        partition: Optional[list[str]] = None,
         ):
     dg_name = f'{group}_{name}'
     dg_assets = []
     dg_jobs = []
     dg_schedules = []
 
-    asset = dagster.asset(name=dg_name)(func)
+    if partition is not None:
+        partition = dagster.StaticPartitionsDefinition(partition)
+
+    asset = dagster.asset(name=dg_name, partitions_def=partition)(func)
     dg_assets.append(asset)
 
     if cron_schedule is not None:
@@ -72,10 +76,19 @@ def job(*args, **kwargs):
 
 ## Additional wrapper schedule the evaluation of notebooks
 
-def _evaluate_notebook(infile, outfile, context):
+def _evaluate_notebook(infile, outfile, context, parameters):
     # evaluate notebook infile (path), store result in outfile (path)
     # return true if the notebook evaluated alright, false otherwise
     srcdir = os.path.dirname(infile)
+
+    if parameters is None:
+        parameters = []
+    else:
+        acc = []
+        for k, v in parameters.items():
+            acc.extend(['-p', str(k), str(v)])
+        parameters = acc
+
     prc = subprocess.Popen(
             [
                 'papermill',
@@ -83,7 +96,7 @@ def _evaluate_notebook(infile, outfile, context):
                 outfile,
                 '--cwd', srcdir, # change working directory like jupyter nb/lab
                 '--log-output',
-                ],
+            ] + parameters,
             stdout = subprocess.PIPE,
             stderr = subprocess.STDOUT,
             text = True,
@@ -109,13 +122,13 @@ def _convert_notebook(ipynb):
                     ipynb
                     ], check=True)
 
-def _evaluate_and_convert_notebook(src, dst, context):
+def _evaluate_and_convert_notebook(src, dst, context, parameters):
     basename = os.path.basename(src)
     htmlname = os.path.splitext(basename)[0] + '.html'
     with tempfile.TemporaryDirectory() as tmp:
         tmpipynb = f'{tmp}/{basename}'
         tmphtml = f'{tmp}/{htmlname}'
-        success = _evaluate_notebook(src, tmpipynb, context)
+        success = _evaluate_notebook(src, tmpipynb, context, parameters)
 
         _convert_notebook(tmpipynb)
         shutil.move(tmphtml, dst) # TODO persist this on S3
@@ -123,8 +136,8 @@ def _evaluate_and_convert_notebook(src, dst, context):
     if not success:
         raise RuntimeError("notebook evaluation failed. Find partially rendered notebook at: " + dst)
 
-def run_notebook(notebook: str, *, relative_to: str, context):
+def run_notebook(notebook: str, *, relative_to: str, context, parameters):
     name = notebook.removesuffix('.ipynb')
     src = dagster.file_relative_path(relative_to, name + ".ipynb")
     dst = dagster.file_relative_path(relative_to, name + ".html")
-    _evaluate_and_convert_notebook(src, dst, context)
+    _evaluate_and_convert_notebook(src, dst, context, parameters)
