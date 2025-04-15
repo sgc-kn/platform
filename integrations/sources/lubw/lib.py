@@ -54,7 +54,7 @@ class Client:
         # API expects MEZ times w/o timezone
         start = start.astimezone(MEZ).replace(tzinfo=None)
         end = end.astimezone(MEZ).replace(tzinfo=None)
-        
+
         return dict(
             komponente=component.remote,
             von=start.isoformat(),
@@ -105,7 +105,7 @@ def component_time_batches(*args):
     for (start, end) in time_batches(*args):
         for c in components:
             yield (c, start, end)
-    
+
 ### Delta Table
 
 delta_table = f's3://{os.environ['S3_DATA_BUCKET']}/'
@@ -125,7 +125,7 @@ def load_measurements(start, end, *, progress=True):
     batches = list(batches)
     if progress:
         batches = tqdm(batches)
-    
+
     client = Client(retries=7)
     data = { c: [] for c in components }
 
@@ -140,6 +140,11 @@ def build_dataframe(data):
     columns = dict()
     for component in components:
         messwerte = data[component]
+
+        if len(messwerte) == 0:
+            # early years do not have pm25
+            continue
+
         df = pandas.DataFrame(messwerte)
         df = df.assign(startZeit=pandas.to_datetime(df.startZeit, utc=True))
         df = df.assign(endZeit=pandas.to_datetime(df.endZeit, utc=True))
@@ -147,21 +152,24 @@ def build_dataframe(data):
         # avoid merging on multi-index; endZeit is redundant; drop here + restore later
         assert all(df.startZeit + timedelta(hours = 1) == df.endZeit)
         del df['endZeit']
-        
+
         series = df.set_index('startZeit').wert
         series = series.dropna()
-        
+
         columns[component.name] = series
+
+    if len(columns) == 0:
+        raise ValueError('data does not contain measurements')
 
     df = pandas.concat(columns, axis=1).reset_index()
 
     # restore endZeit
     df['endZeit'] = df.startZeit + timedelta(hours = 1)
-    
+
     # reorder columns
     df = df.reindex(columns = ['startZeit', 'endZeit'] + list(columns.keys()))
-    
-    return df 
+
+    return df
 
 
 def upload_dataframe(df, *, mode="append", schema_mode="merge", dt=None):
