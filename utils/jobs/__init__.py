@@ -1,4 +1,5 @@
 from typing import Callable, Optional
+from dataclasses import dataclass
 from utils.dagster import registry as dagster_registry
 import dagster
 import os
@@ -27,6 +28,12 @@ if 'ENABLE_ALL_SCHEDULES' in os.environ:
 else:
     schedule_status = dagster.DefaultScheduleStatus.STOPPED
 
+@dataclass(frozen=True)
+class Job:
+    dagster_asset_key: str
+    dagster_asset_def: dagster.AssetsDefinition
+
+
 def _job_definitions(
         func: Callable,
         *,
@@ -34,6 +41,7 @@ def _job_definitions(
         group: str,
         cron_schedule: Optional[str] = None,
         partition: Optional[list[str]] = None,
+        depends_on: Optional[list[Job]] = None,
         ):
     dg_name = f'{group}_{name}'
     dg_assets = []
@@ -43,7 +51,16 @@ def _job_definitions(
     if partition is not None:
         partition = dagster.StaticPartitionsDefinition(partition)
 
-    asset = dagster.asset(name=dg_name, partitions_def=partition)(func)
+    if depends_on is not None:
+        deps = [ x.dagster_asset_def for x in depends_on ]
+    else:
+        deps = None
+
+    asset = dagster.asset(
+            name=dg_name,
+            partitions_def=partition,
+            deps = deps,
+            )(func)
     dg_assets.append(asset)
 
     if cron_schedule is not None:
@@ -61,17 +78,24 @@ def _job_definitions(
                 )
         dg_schedules.append(schedule)
 
-    return dagster.Definitions(
+    job = Job(
+            dagster_asset_def = asset,
+            dagster_asset_key = dg_name,
+            )
+
+    defs = dagster.Definitions(
             assets = dg_assets,
             jobs = dg_jobs,
             schedules = dg_schedules,
             )
 
+    return job, defs
+
 def job(*args, **kwargs):
     def decorator(func: Callable):
-        defs = _job_definitions(func, *args, name=func.__name__, **kwargs)
+        job, defs = _job_definitions(func, *args, name=func.__name__, **kwargs)
         dagster_registry.register(defs)
-        return None # intentionally no `defs` to hide dagster internals
+        return job # intentionally hide dagster internals
     return decorator
 
 ## Additional wrapper schedule the evaluation of notebooks

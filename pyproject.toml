@@ -23,6 +23,7 @@ dependencies = [
     "papermill>=2.6.0",
     "pyarrow>=18.1.0",
     "ruff>=0.9.4",
+    "s3fs>=2025.3.0",
     "sqlparse>=0.5.3",
 ]
 
