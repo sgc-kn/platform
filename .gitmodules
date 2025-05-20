@@ -7,3 +7,6 @@
 [submodule "integrations/sources/lubw/nodered"]
 	path = integrations/sources/lubw/nodered
 	url = https://github.com/sgc-kn/nr-flows-lubw.git
+[submodule "integrations/sources/skn-gis-parkdaten/nodered"]
+	path = integrations/sources/skn-gis-parkdaten/nodered
+	url = https://github.com/sgc-kn/nr-flows-parkdaten.git
