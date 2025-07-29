@@ -9,10 +9,11 @@ Ein Dienstleister betreibt weitere Stationen. Dieser Dienstleister
 liefert auch Wetterprognosen.
 
 Wir
-- persistieren den Nachrichten-Stream in S3/DeltaLake (`*.ipynb`,
-  `job.py`)
+- persistieren den Nachrichten-Stream in S3/DeltaLake (`./*.ipynb`,
+  `./jobs.py`)
 - persistieren die Wetter-Aufzeichnungen in der UDSP
-  ([`nodered`][./nodered])
-- teilen die Aufzeichnungen mit dem Dienstleister ([`nodered`][./nodered])
+  (`./nodered`)
+- teilen die Aufzeichnungen mit dem Dienstleister
+  (`./nodered`)
 - spiegeln Aufzeichnungen und Prognosen von dem Dienstleister in die
-  UDSP ([`nodered`][./nodered])
+  UDSP (`./nodered`)
