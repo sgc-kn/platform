@@ -10,3 +10,6 @@
 [submodule "integrations/sources/skn-gis-parkdaten/nodered"]
 	path = integrations/sources/skn-gis-parkdaten/nodered
 	url = https://github.com/sgc-kn/nr-flows-parkdaten.git
+[submodule "integrations/sources/sgc-weather/nodered"]
+	path = integrations/sources/sgc-weather/nodered
+	url = https://github.com/sgc-kn/nr-flows-weather.git
