@@ -1,5 +1,6 @@
 data
 tmp*
+.tmp_dagster*
 
 # Python
 *.egg-info
