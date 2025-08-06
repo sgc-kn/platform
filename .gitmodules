@@ -13,3 +13,6 @@
 [submodule "integrations/sources/sgc-weather/nodered"]
 	path = integrations/sources/sgc-weather/nodered
 	url = https://github.com/sgc-kn/nr-flows-weather.git
+[submodule "integrations/sources/lasepeco/nodered"]
+	path = integrations/sources/lasepeco/nodered
+	url = https://github.com/sgc-kn/nr-flows-passantenlasepeco.git
