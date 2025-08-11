@@ -16,3 +16,6 @@
 [submodule "integrations/sources/lasepeco/nodered"]
 	path = integrations/sources/lasepeco/nodered
 	url = https://github.com/sgc-kn/nr-flows-passantenlasepeco.git
+[submodule "integrations/sources/pegelonline/nodered"]
+	path = integrations/sources/pegelonline/nodered
+	url = https://github.com/sgc-kn/nr-flows-pegelonline.git
