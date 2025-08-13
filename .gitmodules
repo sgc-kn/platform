@@ -22,3 +22,6 @@
 [submodule "integrations/sources/internal-reporting/nodered"]
 	path = integrations/sources/internal-reporting/nodered
 	url = https://github.com/sgc-kn/nr-flows-reporting.git
+[submodule "integrations/sources/ecocounter/nodered"]
+	path = integrations/sources/ecocounter/nodered
+	url = https://github.com/sgc-kn/nr-flows-ecocounter.git
