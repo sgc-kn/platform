@@ -1,4 +1,4 @@
-from integrations.sinks.udsp.auth import udp_auth
+from utils.udsp.auth import udp_auth
 import httpx
 import os
 

@@ -1,4 +1,4 @@
-from integrations.sources.lubw import lib
+from integrations.lubw import lib
 import httpx
 
 def test_documentation():

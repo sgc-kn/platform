@@ -1,27 +1,27 @@
 [submodule "integrations/sources/mobidata/nodered"]
-	path = integrations/sources/mobidata/nodered
+	path = integrations/mobidata/nodered
 	url = https://github.com/sgc-kn/nr-flows-mobidata.git
 [submodule "integrations/sources/dwd/nodered"]
-	path = integrations/sources/dwd/nodered
+	path = integrations/dwd/nodered
 	url = https://github.com/sgc-kn/nr-flows-dwd.git
 [submodule "integrations/sources/lubw/nodered"]
-	path = integrations/sources/lubw/nodered
+	path = integrations/lubw/nodered
 	url = https://github.com/sgc-kn/nr-flows-lubw.git
 [submodule "integrations/sources/skn-gis-parkdaten/nodered"]
-	path = integrations/sources/skn-gis-parkdaten/nodered
+	path = integrations/skn-gis-parkdaten/nodered
 	url = https://github.com/sgc-kn/nr-flows-parkdaten.git
 [submodule "integrations/sources/sgc-weather/nodered"]
-	path = integrations/sources/sgc-weather/nodered
+	path = integrations/sgc-weather/nodered
 	url = https://github.com/sgc-kn/nr-flows-weather.git
 [submodule "integrations/sources/lasepeco/nodered"]
-	path = integrations/sources/lasepeco/nodered
+	path = integrations/lasepeco/nodered
 	url = https://github.com/sgc-kn/nr-flows-passantenlasepeco.git
 [submodule "integrations/sources/pegelonline/nodered"]
-	path = integrations/sources/pegelonline/nodered
+	path = integrations/pegelonline/nodered
 	url = https://github.com/sgc-kn/nr-flows-pegelonline.git
 [submodule "integrations/sources/internal-reporting/nodered"]
-	path = integrations/sources/internal-reporting/nodered
+	path = integrations/internal-reporting/nodered
 	url = https://github.com/sgc-kn/nr-flows-reporting.git
 [submodule "integrations/sources/ecocounter/nodered"]
-	path = integrations/sources/ecocounter/nodered
+	path = integrations/ecocounter/nodered
 	url = https://github.com/sgc-kn/nr-flows-ecocounter.git

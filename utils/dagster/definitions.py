@@ -5,8 +5,8 @@ from .registry import registry
 
 ## We could import the relevant modules manually like this:
 
-# from integrations.sources.lubw import incremental_sync_job
-# from integrations.sources.lubw import monthly_asset
+# from integrations.lubw import incremental_sync_job
+# from integrations.lubw import monthly_asset
 
 ## Instead we search and import the modules automatically
 ## TODO Move the load logic to utils.jobs
