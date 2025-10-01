@@ -2,6 +2,8 @@
 
 ## German Abstract (TODO)
 
+## What is this about? (TODO)
+
 ## Open Source
 
 This project is pronsored by the [Smart City grant program](https://www.smart-city-dialog.de/ueber-uns/modellprojekte-smart-cities) in Germany.
@@ -22,6 +24,7 @@ We use the following features and components:
 
 We are also experimenting with potential modifications to this stack:
 - Replace Node-RED (development + deployment) with Python notebooks (development) and an orchestrator like [Airflow](https://airflow.apache.org/) or [Dagster](https://dagster.io/) (deployment).
+- Cloud-based development environments (currently [Github Codespaces](https://github.com/features/codespaces), later an open source alternative like [Coder](https://coder.com/cde) or [Eclipse Che](https://eclipse.dev/che/)).
 - Complement the Postgres databases with S3-based data storage such as [Delta Lake](https://delta.io/).
 - [Infisical](https://infisical.com/) for secret management.
 
@@ -39,6 +42,12 @@ We are also experimenting with potential modifications to this stack:
 - Configuration for scheduled execution on the orchestrator in `./integrations/*/jobs.py`.
 - Globally reusable parts (e.g. for UDSP upload) in `./utils`.
 - Plumbing for dagster orchestrator in `./utils/dagster`.
-- A kubernetes deployment (ArgoCD, Dagster, the integration code, and Infisical external secrets) in https://github.com/sgc-kn/k8s-sandbox.
+- A kubernetes deployment (ArgoCD, Dagster, the integration code, and Infisical secrets) in https://github.com/sgc-kn/k8s-sandbox.
 
-## License (TODO)
+## License and Copyright
+
+Copyright © 2024-2025 [Stadt Konstanz](https://www.konstanz.de)
+
+We release this code under the EUPL-1.2 License. See the LICENSE file
+for details. Contributions to this project will be licensed under the same
+terms.
