@@ -16,7 +16,7 @@ We use the following features and components:
 - [Keycloak](https://www.keycloak.org/) to manage identities and access of internal and external participants. 
 - Data is  compartmentalized in various *"data spaces"*, each with their own access rules.
 - The data lives in [Timescale](https://github.com/timescale/timescaledb)/[Postgres](https://www.postgresql.org/) databases.
-- [Node-RED (low-code programming environment)](https://nodered.org/) for data integrations and automation.
+- [Node-RED](https://nodered.org/) for low-code data integrations and automation.
 - [Grafana](https://grafana.com/) for internal dashboards, monitoring, and alerting.
 - Some [FIWARE](https://www.fiware.org/) components ([Stellio](https://stellio.readthedocs.io), [Quantumleap](https://quantumleap.readthedocs.io)) to provide (partially) [NGSI-LD](https://ngsild.org/) compliant APIs.
 - [PostgREST](https://docs.postgrest.org/) to expose RESTful APIs for the Postgres databases directly. (This is a custom addition to the UDSP stack.)
@@ -46,10 +46,9 @@ We integrate multiple data sources into our data platform:
 
 If applicable, data sources are filtered for the region of Constance. We generally record historic values to obtain timeseries data.
 
-## Node-RED integrations (WIP)
+### Node-RED
 
-- One instance per data space (`./integrations/*/nodered` submodules and `github.com/sgc-kn/nr-flows-*` repositories)
-- Submodule and Node-RED setup in `./documentation/nodered-projects.md`)
+Some of these integrations are implemented and deployed as Node-RED flows. We generally use one UDSP data space per data source and one productive Node-RED instance per data space. Integrations which are based on Node-RED have their Node-RED project tracked as [separate Git repositories](https://github.com/orgs/sgc-kn/repositories?q=node-red-project). These Node-RED projects are then linked into the respective integrations folder in this repository using [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules) (e.g., [`./integrations/dwd/nodered`](./integrations/dwd/nodered`)). Additional documentation on how we manage the different Node-RED code repositories on multiple Node-RED instances is available in [`./documentation/nodered-projects.md`](./documentation/nodered-projects.md).
 
 ## Experimental Stack (WIP)
 
