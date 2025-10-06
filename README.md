@@ -37,7 +37,7 @@ We integrate multiple data sources into our data platform:
 - Bicycle traffic counts from eco-counter monitors in [`./integrations/ecocounter/`](./integrations/ecocounter/).
 - Usage metrics from our internal dashboard solution in [`./integrations/internal-reporting/`](./integrations/internal-reporting).
 - Pedestrian traffic counts from lasepeco monitors in [`./integrations/lasepeco/`](./integrations/lasepeco/).
-- Air quality data from Baden-Württemberg State Institute for the Environment (LUBW) in [`./integrations/lubw/`](./integrations/lubw/).
+- Air quality data from the Baden-Württemberg State Institute for the Environment (LUBW) in [`./integrations/lubw/`](./integrations/lubw/).
 - Solar power production capacity and e-charging availability data from the national "Marktstammdatenregister" (MaStR) in [`./integrations/marktstammdatenregister/`](./integrations/marktstammdatenregister/).
 - Bike-hire and free-floating scooter availability from Mobidata BW in [`./integrations/mobidata/`](./integrations/mobidata/).
 - Water level data from Pegelonline in [`./integrations/pegelonline/`](./integrations/pegelonline/).
@@ -50,14 +50,21 @@ If applicable, data sources are filtered for the region of Constance. We general
 
 Some of these integrations are implemented and deployed as Node-RED flows. We generally use one UDSP data space per data source and one productive Node-RED instance per data space. Integrations which are based on Node-RED have their Node-RED project tracked as [separate Git repositories](https://github.com/orgs/sgc-kn/repositories?q=node-red-project). These Node-RED projects are then linked into the respective integrations folder in this repository using [Git submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules) (e.g., [`./integrations/dwd/nodered`](./integrations/dwd/nodered`)). Additional documentation on how we manage the different Node-RED code repositories on multiple Node-RED instances is available in [`./documentation/nodered-projects.md`](./documentation/nodered-projects.md).
 
-## Experimental Stack (WIP)
+### Experimental Stack
 
-- Python notebooks in `./integrations/*/*.ipynb`.
-- Reusable parts of the integrations as Python modules in `./integrations/*/*.py`.
-- Configuration for scheduled execution on the orchestrator in `./integrations/*/jobs.py`.
-- Globally reusable parts (e.g. for UDSP upload) in `./utils`.
-- Plumbing for dagster orchestrator in `./utils/dagster`.
-- A kubernetes deployment (ArgoCD, Dagster, the integration code, and Infisical secrets) in https://github.com/sgc-kn/k8s-sandbox.
+Some other integrations are implemented as IPython notebooks (`./integrations/*/*.ipynb`). Reusable parts of the integration are maintained as separate modules, either in the integrations directory (`./integrations/*/*.py`) if they are related to a single data source, or in the [`./utils/`](./utils/) directory if they are applicable to multiple data sources (e.g., code for UDSP uploads in [`./utils/udsp`](./utils/udsp/)).
+
+Some of the data sources are updated irregularly or at very long intervals. E.g., [bast traffic count data](./integrations/bast/) updates once a year. For such integrations, we avoid the technical overhead of automation and run the respective notebooks manually and on demand.
+
+We're experimenting with Dagster and Airflow to schedule the automatic exection of IPython notebook based integrations. The intended execution schedules are defined in the `jobs.py` file in the respective integration directory, e.g., [`./integrations/sgc-weather/jobs.py`](`./integrations/sgc-weather/jobs.py`) to mirror and persist all LoraWAN messages from our TTI instance to S3 object storage. The Dagster glue code in [`./utils/dagster/`](./utils/dagster/) turns all these job definitions into a Dagster code location which we publish as Docker image on the [GitHub Container Registry (ghcr.io)](https://github.com/sgc-kn/platform/pkgs/container/platform).
+A separate repository, [sgc-kn/k8s-sandbox](https://github.com/sgc-kn/k8s-sandbox), documents our actual deployment of Dagster and the Dagster code location on kubernetes using ArgoCD. Note, the integrations depend on various secrets like S3 bucket IDs and keys, UDSP access credentials, and data source API keys. We manage these secrets in [Infisical](https://infisical.com/) and sync them to the kubernetes deployment using the [external secrets operator](https://external-secrets.io). Without those secrets, the integrations will inevitably fail.
+
+### Python Development Environment
+
+We found it very challenging to set up Python development environments on our corporate IT infrastructure (outbound firewall, no admin rights).
+To avoid punching big holes into mostly warrented defenses, we resorted to running all development related task either outside the corporate network: either in the cloud or on unmanaged Linux devices with unrestricted root access. This repository supports [devenv](https://devenv.sh/), [devcontainers](https://containers.dev/), and [GitHub Codespaces](https://github.com/features/codespaces) to get you started quickly and reproducibly.
+
+Note, the first step in a any new dev environment is to load the secrets from Infisical. Run `just dotenv` for that.
 
 ## License and Copyright
 
