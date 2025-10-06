@@ -6,12 +6,12 @@
 
 ## Open Source
 
-This project is pronsored by the [Smart City grant program](https://www.smart-city-dialog.de/ueber-uns/modellprojekte-smart-cities) in Germany.
-This grant program mandates that all software components—whether deployed as-in, modified, or written anew—are open source.
+This project is spronsored by the [Smart City grant program](https://www.smart-city-dialog.de/ueber-uns/modellprojekte-smart-cities) in Germany.
+This grant program mandates that all software components—whether deployed as-is, modified, or written anew—are open source.
 
 ## Stack
 
-The heart of our data platform is a managed instance of [Hypertegrity's Urban Data Space Platform (UDSP)](https://www.hypertegrity.de/urban-data-space-platform/).
+Our data platform is based on a managed instance of [Hypertegrity's Urban Data Space Platform (UDSP)](https://www.hypertegrity.de/urban-data-space-platform/).
 We use the following features and components:
 - [Keycloak](https://www.keycloak.org/) to manage identities and access of internal and external participants. 
 - Data is  compartmentalized in various *"data spaces"*, each with their own access rules.
@@ -28,7 +28,23 @@ We are also experimenting with potential modifications to this stack:
 - Complement the Postgres databases with S3-based data storage such as [Delta Lake](https://delta.io/).
 - [Infisical](https://infisical.com/) for secret management.
 
-## Data Sources (TODO)
+## Data Sources
+
+We integrate multiple data sources into our data platform:
+
+- Car traffic counts from the Federal Highway and Transport Research Institute (bast) in [`./integrations/bast/`](./integrations/bast/).
+- Extreme weather alarms, weather observations, and weather forecast data from the National Meteorological Service (DWD) in [`./integrations/dwd/`](./integrations/dwd/).
+- Bicycle traffic counts from eco-counter monitors in [`./integrations/ecocounter/`](./integrations/ecocounter/).
+- Usage metrics from our internal dashboard solution in [`./integrations/internal-reporting/`](./integrations/internal-reporting).
+- Pedestrian traffic counts from lasepeco monitors in [`./integrations/lasepeco/`](./integrations/lasepeco/).
+- Air quality data from Baden-Württemberg State Institute for the Environment (LUBW) in [`./integrations/lubw/`](./integrations/lubw/).
+- Solar power production capacity and e-charging availability data from the national "Marktstammdatenregister" (MaStR) in [`./integrations/marktstammdatenregister/`](./integrations/marktstammdatenregister/).
+- Bike-hire and free-floating scooter availability from Mobidata BW in [`./integrations/mobidata/`](./integrations/mobidata/).
+- Water level data from Pegelonline in [`./integrations/pegelonline/`](./integrations/pegelonline/).
+- Weather observation data from our own weather stations in [`./integrations/sgc-weather/`](./integrations/sgc-weather/).
+- Parking facility utilization data in [`./integrations/skn-gis-parkdaten/`](./integrations/skn-gis-parkdaten/).
+
+If applicable, data sources are filtered for the region of Constance. We generally record historic values to obtain timeseries data.
 
 ## Node-RED integrations (WIP)
 
