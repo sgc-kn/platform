@@ -1,6 +1,6 @@
 # SGC Klimadatenplattform
 
-## German Abstract
+[German abstract; English version below]
 
 Die [SGC Klimadatenplattform](https://smart-green-city-konstanz.de/klimadatenplattform) der Stadt Konstanz bündelt Klima‑, Umwelt‑ und mobilitätsbezogene Zeitreihen in einer einheitlichen, rechtskonformen Infrastruktur. Sensorströme, amtliche Datensätze und betriebliche Kennzahlen werden zusammengeführt, strukturiert und über APIs sowie Dashboards bereitgestellt, um interne Abläufe, evidenzbasierte Planungen und Transparenz gegenüber der Öffentlichkeit zu unterstützen. Typische Anwendungsfälle umfassen etwa die Einsatzplanung des Winterdienstes, strategische Mobilitätsanalysen, Klimaanpassungsmaßnahmen sowie die Veröffentlichung auf Portalen wie [stadtdaten.konstanz.digital](https://stadtdaten.konstanz.digital/) und [offenedaten-konstanz.de](https://offenedaten-konstanz.de/).
 
