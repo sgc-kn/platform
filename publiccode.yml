@@ -1,10 +1,12 @@
-publiccodeYmlVersion: '0.2'
+# This repository adheres to the publiccode.yml standard by including this 
+# metadata file that makes public software easily discoverable.
+# More info at https://github.com/italia/publiccode.yml
 
+publiccodeYmlVersion: '0.2'
 name: Klimadatenplattform Konstanz
 url: 'https://github.com/sgc-kn/platform'
 landingURL: 'https://smart-green-city-konstanz.de/klimadatenplattform'
 logo: logo.svg
-
 softwareType: standalone/server
 platforms:
   - cloud
@@ -13,22 +15,12 @@ categories:
   - data-management
   - data-analytics
   - open-data
-
 releaseDate: '2025-09-01'
-softwareVersion: 'rolling'
+softwareVersion: rolling
 developmentStatus: stable
 usedBy:
   - Stadt Konstanz
 isBasedOn: 'https://www.hypertegrity.de/urban-data-space-platform/'
-
-intendedAudience:
-  scope:
-    - environment
-    - local-authorities
-
-maintenance:
-  type: internal
-
 contacts:
   - name: Patrik Keller
     email: patrik.keller@konstanz.de
@@ -36,46 +28,67 @@ contacts:
     email: wilfried.baumgartner@konstanz.de
   - name: Smart Green City Konstanz
     email: smartgreencity@konstanz.de
-
+maintenance:
+  type: internal
 legal:
   license: EUPL-1.2
   mainCopyrightOwner: Stadt Konstanz
   repoOwner: Stadt Konstanz
-
+intendedAudience:
+  scope:
+    - environment
+    - local-authorities
 localisation:
   localisationReady: false
-
 description:
   de:
     shortDescription: >
-      Integrationen, Module und Jobs für die Klimadatenplattform der Stadt Konstanz.
+      Integrations, modules and jobs for the City of Konstanz climate data
+      platform.
     longDescription: >
-      Dieses Repository bündelt die technischen Integrationen für die SGC
-      Klimadatenplattform der Stadt Konstanz. Es führt diverse Datenquellen – u. a.
-      Wetterstationen (DWD und eigene Stationen), Verkehrs‑ und Fahrradzählungen,
-      Luftqualität (LUBW), Pegelstände, Solar‑ und Ladeinfrastruktur, MobiData BW
-      sowie interne Betriebskennzahlen – zusammen, bereinigt sie und speichert sie
-      als Zeitreihen. Bereitstellung erfolgt über APIs und Dashboards in einer
-      einheitlichen, rechtskonformen Infrastruktur. Die Plattform stützt interne
-      Abläufe, evidenzbasierte Planungen (z. B. Winterdienst, Mobilitätsanalysen,
-      Klimaanpassung) und Transparenz gegenüber der Öffentlichkeit.
+      This repository contains the technical integrations for the City of
+      Konstanz’s climate data platform. It consolidates diverse sources—e.g.,
+      weather stations (DWD and city-operated), traffic and bicycle counts, air
+      quality (LUBW), water levels, solar and charging infrastructure, MobiData
+      BW, and internal metrics—, cleans and persists them as time series, and
+      exposes them via APIs and dashboards in a unified, policy‑compliant
+      infrastructure. It supports internal workflows, evidence‑based planning
+      (e.g., winter service, mobility analysis, climate adaptation), and public
+      transparency.
     features:
-      - Zeitreihen-Ingestion aus amtlichen, betrieblichen und städtischen Quellen (z. B. DWD, LUBW, BASt, Pegelonline, Eco‑Counter, MobiData BW, MaStR, eigene Stationen)
-      - Persistenz in Timescale/Postgres und Bereitstellung über APIs (u. a. NGSI‑LD via Stellio/Quantumleap, PostgREST) und Dashboards (Grafana)
-      - Implementierungen als Node‑RED‑Flows sowie Python‑Notebooks; experimentelle Orchestrierung mit Dagster and Airflow
+      - >-
+        Time series ingestion from official, operational and municipal sources
+        (e.g., DWD, LUBW, BASt, Pegelonline, Eco‑Counter, MobiData BW, MaStR,
+        city stations)
+      - >-
+        Persistence in Timescale/Postgres and exposure via APIs (incl. NGSI‑LD
+        via Stellio/Quantumleap, PostgREST) and dashboards (Grafana)
+      - >-
+        Implementations as Node‑RED flows and Python notebooks; experimental
+        orchestration with Dagster and Airflow
+    genericName: Datenplattform Integrationen
   en:
     shortDescription: >
-      Integrations, modules and jobs for the City of Konstanz climate data platform.
+      Integrations, modules and jobs for the City of Konstanz climate data
+      platform.
     longDescription: >
-      This repository contains the technical integrations for the City of Konstanz’s
-      climate data platform. It consolidates diverse sources—e.g., weather stations
-      (DWD and city-operated), traffic and bicycle counts, air quality (LUBW), water
-      levels, solar and charging infrastructure, MobiData BW, and internal metrics—,
-      cleans and persists them as time series, and exposes them via APIs and dashboards
-      in a unified, policy‑compliant infrastructure. It supports internal workflows,
-      evidence‑based planning (e.g., winter service, mobility analysis, climate
-      adaptation), and public transparency.
+      This repository contains the technical integrations for the City of
+      Konstanz’s climate data platform. It consolidates diverse sources—e.g.,
+      weather stations (DWD and city-operated), traffic and bicycle counts, air
+      quality (LUBW), water levels, solar and charging infrastructure, MobiData
+      BW, and internal metrics—, cleans and persists them as time series, and
+      exposes them via APIs and dashboards in a unified, policy‑compliant
+      infrastructure. It supports internal workflows, evidence‑based planning
+      (e.g., winter service, mobility analysis, climate adaptation), and public
+      transparency.
     features:
-      - Time series ingestion from official, operational and municipal sources (e.g., DWD, LUBW, BASt, Pegelonline, Eco‑Counter, MobiData BW, MaStR, city stations)
-      - Persistence in Timescale/Postgres and exposure via APIs (incl. NGSI‑LD via Stellio/Quantumleap, PostgREST) and dashboards (Grafana)
-      - Implementations as Node‑RED flows and Python notebooks; experimental orchestration with Dagster and Airflow
+      - >-
+        Time series ingestion from official, operational and municipal sources
+        (e.g., DWD, LUBW, BASt, Pegelonline, Eco‑Counter, MobiData BW, MaStR,
+        city stations)
+      - >-
+        Persistence in Timescale/Postgres and exposure via APIs (incl. NGSI‑LD
+        via Stellio/Quantumleap, PostgREST) and dashboards (Grafana)
+      - >-
+        Implementations as Node‑RED flows and Python notebooks; experimental
+        orchestration with Dagster and Airflow
