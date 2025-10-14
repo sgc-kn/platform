@@ -8,9 +8,9 @@ url: 'https://github.com/sgc-kn/platform'
 landingURL: 'https://smart-green-city-konstanz.de/klimadatenplattform'
 logo: logo.svg
 
-softwareType: standalone/server
+softwareType: standalone/backend
 platforms:
-  - cloud
+  - linux
 categories:
   - data-collection
   - data-management
