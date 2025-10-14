@@ -10,12 +10,12 @@ logo: logo.svg
 
 softwareType: standalone/backend
 platforms:
+  - cloud
   - linux
 categories:
   - data-collection
   - data-management
   - data-analytics
-  - open-data
   
 releaseDate: '2025-09-01'
 softwareVersion: rolling
