@@ -3,7 +3,7 @@
 # More info at https://github.com/italia/publiccode.yml
 
 publiccodeYmlVersion: '0.2'
-name: Klimadatenplattform Konstanz
+name: Klimadatenplattform
 url: 'https://github.com/sgc-kn/platform'
 landingURL: 'https://smart-green-city-konstanz.de/klimadatenplattform'
 logo: logo.svg
@@ -51,7 +51,7 @@ localisation:
 description:
   de:
     genericName: Datenplattform
-    localisedName: Klimadatenplattform Konstanz
+    localisedName: Klimadatenplattform
     shortDescription: >
       Integrations, modules and jobs for the City of Konstanz climate data
       platform.
@@ -81,7 +81,7 @@ description:
         
   en:
     genericName: Data Platform
-    localisedName: Climate Data Platform Konstanz
+    localisedName: Climate Data Platform
     shortDescription: >
       Integrations, modules and jobs for the City of Konstanz climate data
       platform.
