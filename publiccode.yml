@@ -3,7 +3,7 @@
 # More info at https://github.com/italia/publiccode.yml
 
 publiccodeYmlVersion: '0.2'
-name: Datenplattform
+name: Klimadatenplattform
 url: 'https://github.com/sgc-kn/platform'
 landingURL: 'https://smart-green-city-konstanz.de/klimadatenplattform'
 logo: logo.svg
