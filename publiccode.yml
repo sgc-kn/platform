@@ -53,31 +53,31 @@ description:
     genericName: Datenplattform
     localisedName: Klimadatenplattform
     shortDescription: >
-      Integrations, modules and jobs for the City of Konstanz climate data
-      platform.
+      Integrationen, Module und Jobs für die Klimadatenplattform der Stadt Konstanz.
       
     longDescription: >
-      This repository contains the technical integrations for the City of
-      Konstanz’s climate data platform. It consolidates diverse sources—e.g.,
-      weather stations (DWD and city-operated), traffic and bicycle counts, air
-      quality (LUBW), water levels, solar and charging infrastructure, MobiData
-      BW, and internal metrics—, cleans and persists them as time series, and
-      exposes them via APIs and dashboards in a unified, policy‑compliant
-      infrastructure. It supports internal workflows, evidence‑based planning
-      (e.g., winter service, mobility analysis, climate adaptation), and public
-      transparency.
+      Dieses Repository enthält die technischen Integrationen für die
+      Klimadatenplattform der Stadt Konstanz. Es konsolidiert vielfältige Quellen—z. B.
+      Wetterstationen (DWD und städtisch betrieben), Verkehrs- und Fahrradzählungen,
+      Luftqualität (LUBW), Wasserstände, Solar- und Ladeinfrastruktur, MobiData BW
+      sowie interne Kennzahlen—, bereinigt sie und persistiert sie als Zeitreihen und
+      stellt sie über APIs und Dashboards in einer einheitlichen, richtlinienkonformen
+      Infrastruktur bereit. Es unterstützt interne Arbeitsabläufe, evidenzbasierte
+      Planung (z. B. Winterdienst, Mobilitätsanalyse, Klimaanpassung) und öffentliche
+      Transparenz.
       
     features:
       - >-
-        Time series ingestion from official, operational and municipal sources
-        (e.g., DWD, LUBW, BASt, Pegelonline, Eco‑Counter, MobiData BW, MaStR,
-        city stations)
+        Erfassung von Zeitreihen aus offiziellen, operativen und kommunalen Quellen
+        (z. B. DWD, LUBW, BASt, Pegelonline, Eco‑Counter, MobiData BW, MaStR,
+        städtische Stationen)
       - >-
-        Persistence in Timescale/Postgres and exposure via APIs (incl. NGSI‑LD
-        via Stellio/Quantumleap, PostgREST) and dashboards (Grafana)
+        Persistenz in Timescale/Postgres und Bereitstellung über APIs (inkl. NGSI‑LD
+        via Stellio/Quantumleap, PostgREST) sowie Dashboards (Grafana)
       - >-
-        Implementations as Node‑RED flows and Python notebooks; experimental
-        orchestration with Dagster and Airflow
+        Implementierungen als Node‑RED‑Flows und Python‑Notebooks; experimentelle
+        Orchestrierung mit Dagster und Airflow
+
         
   en:
     genericName: Data Platform
