@@ -7,6 +7,7 @@ name: Klimadatenplattform Konstanz
 url: 'https://github.com/sgc-kn/platform'
 landingURL: 'https://smart-green-city-konstanz.de/klimadatenplattform'
 logo: logo.svg
+
 softwareType: standalone/server
 platforms:
   - cloud
@@ -15,36 +16,46 @@ categories:
   - data-management
   - data-analytics
   - open-data
+  
 releaseDate: '2025-09-01'
 softwareVersion: rolling
 developmentStatus: stable
+
 usedBy:
   - Stadt Konstanz
 isBasedOn: 'https://www.hypertegrity.de/urban-data-space-platform/'
-contacts:
-  - name: Patrik Keller
-    email: patrik.keller@konstanz.de
-  - name: Wilfried Baumgartner
-    email: wilfried.baumgartner@konstanz.de
-  - name: Smart Green City Konstanz
-    email: smartgreencity@konstanz.de
-maintenance:
-  type: internal
-legal:
-  license: EUPL-1.2
-  mainCopyrightOwner: Stadt Konstanz
-  repoOwner: Stadt Konstanz
+
 intendedAudience:
   scope:
     - environment
     - local-authorities
+    
+maintenance:
+  type: internal
+  contacts:
+    - name: Patrik Keller
+      email: patrik.keller@konstanz.de
+    - name: Wilfried Baumgartner
+      email: wilfried.baumgartner@konstanz.de
+    - name: Smart Green City Konstanz
+      email: smartgreencity@konstanz.de
+      
+legal:
+  license: EUPL-1.2
+  mainCopyrightOwner: Stadt Konstanz
+  repoOwner: Stadt Konstanz
+
 localisation:
   localisationReady: false
+  
 description:
   de:
+    genericName: Datenplattform
+    localisedName: Klimadatenplattform Konstanz
     shortDescription: >
       Integrations, modules and jobs for the City of Konstanz climate data
       platform.
+      
     longDescription: >
       This repository contains the technical integrations for the City of
       Konstanz’s climate data platform. It consolidates diverse sources—e.g.,
@@ -55,6 +66,7 @@ description:
       infrastructure. It supports internal workflows, evidence‑based planning
       (e.g., winter service, mobility analysis, climate adaptation), and public
       transparency.
+      
     features:
       - >-
         Time series ingestion from official, operational and municipal sources
@@ -66,11 +78,14 @@ description:
       - >-
         Implementations as Node‑RED flows and Python notebooks; experimental
         orchestration with Dagster and Airflow
-    genericName: Datenplattform Integrationen
+        
   en:
+    genericName: Data Platform
+    localisedName: Climate Data Platform Konstanz
     shortDescription: >
       Integrations, modules and jobs for the City of Konstanz climate data
       platform.
+      
     longDescription: >
       This repository contains the technical integrations for the City of
       Konstanz’s climate data platform. It consolidates diverse sources—e.g.,
@@ -81,6 +96,7 @@ description:
       infrastructure. It supports internal workflows, evidence‑based planning
       (e.g., winter service, mobility analysis, climate adaptation), and public
       transparency.
+      
     features:
       - >-
         Time series ingestion from official, operational and municipal sources
