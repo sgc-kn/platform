@@ -13,7 +13,8 @@ dagster:
 # start airflow development environment
 airflow \
   $AIRFLOW_HOME=`realpath _airflow` \
-  $AIRFLOW__CORE__DAGS_FOLDER=`realpath utils/airflow/dags` :
+  $AIRFLOW__CORE__DAGS_FOLDER=`realpath utils/airflow/dags` \
+  $AIRFLOW__API_AUTH__JWT_SECRET=`openssl rand -base64 16` :
   [ -e _airflow ] || mkdir _airflow
   [ -e _airflow/airflow.cfg ] || \
     ln -s ../utils/airflow/airflow-dev.cfg _airflow/airflow.cfg
@@ -42,7 +43,7 @@ airflow-install-version version:
 
 # install default airflow version
 airflow-install:
-  just airflow-install-version 3.0.6
+  just airflow-install-version 3.1.0
 
 
 # update .env file with Infisical secrets

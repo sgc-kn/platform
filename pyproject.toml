@@ -11,7 +11,7 @@ classifiers = [
     "Programming Language :: Python :: 3"
 ]
 dependencies = [
-    "apache-airflow==3.0.6",
+    "apache-airflow==3.1.0",
     "dagster",
     "dagster-webserver",
     "deltalake",
