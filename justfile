@@ -29,6 +29,22 @@ airflow-login:
 airflow-clean:
   rm -r _airflow
 
+# install given airflow version and add to pyproject and uv.lock
+# following https://airflow.apache.org/docs/apache-airflow/stable/start.html
+# oh wow! airflow seems to be pinning half the python ecosystem to specific versions.
+# what a mess!
+# TODO think about decoupling. Can we run the task with their own python env?
+airflow-install-version version:
+  #!/usr/bin/env bash
+  PYTHON=`uv run python -c 'import sys; print(f"{sys.version_info.major}.{sys.version_info.minor}")'`
+  CONSTRAINTS="https://raw.githubusercontent.com/apache/airflow/constraints-{{version}}/constraints-${PYTHON}.txt"
+  uv add "apache-airflow=={{version}}" --constraint "${CONSTRAINTS}"
+
+# install default airflow version
+airflow-install:
+  just airflow-install-version 3.0.6
+
+
 # update .env file with Infisical secrets
 dotenv:
   infisical export --env=dev > .env || infisical login && infisical export --env=dev > .env
