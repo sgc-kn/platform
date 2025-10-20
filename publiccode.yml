@@ -46,7 +46,10 @@ legal:
   repoOwner: Stadt Konstanz
 
 localisation:
-  localisationReady: false
+  localisationReady: true
+  availableLanguages:
+    - en
+    - de
   
 description:
   de:
