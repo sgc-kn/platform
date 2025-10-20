@@ -41,7 +41,7 @@ We are also experimenting with potential modifications to this stack:
 We integrate multiple data sources into our data platform:
 
 - Car traffic counts from the Federal Highway and Transport Research Institute (BASt) in [`./integrations/bast/`](./integrations/bast/).
-- Extreme weather alarms, weather observations, and weather forecast data from the National Meteorological Service (DWD) in [`./integrations/dwd/`](./integrations/dwd/).
+- Weather observations, and weather forecast data from the National Meteorological Service (DWD) in [`./integrations/dwd/`](./integrations/dwd/).
 - Bicycle traffic counts from Eco-Counter monitors in [`./integrations/ecocounter/`](./integrations/ecocounter/).
 - Usage metrics from our internal dashboard solution in [`./integrations/internal-reporting/`](./integrations/internal-reporting).
 - Pedestrian traffic counts from LASE PeCo monitors in [`./integrations/lasepeco/`](./integrations/lasepeco/).
