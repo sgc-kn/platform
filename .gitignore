@@ -3,9 +3,6 @@ data
 tmp*
 .tmp_dagster*
 
-# Airflow
-_airflow
-
 # Python
 *.egg-info
 __pycache__
