@@ -46,7 +46,9 @@ We integrate multiple data sources into our data platform:
 - Usage metrics from our internal dashboard solution in [`./integrations/internal-reporting/`](./integrations/internal-reporting).
 - Pedestrian traffic counts from LASE PeCo monitors in [`./integrations/lasepeco/`](./integrations/lasepeco/).
 - Air quality data from the Baden-Württemberg State Institute for the Environment (LUBW) in [`./integrations/lubw/`](./integrations/lubw/).
-- Solar power production capacity and e-charging availability data from the national "Marktstammdatenregister" (MaStR) in [`./integrations/marktstammdatenregister/`](./integrations/marktstammdatenregister/).
+- Solar power production capacity and e-charging availability data from
+  the national "Marktstammdatenregister" (MaStR) in
+  [`./integrations/mastr/`](./integrations/mastr/).
 - Bike-hire and free-floating scooter availability from MobiData BW in [`./integrations/mobidata/`](./integrations/mobidata/).
 - Water level data from Pegelonline in [`./integrations/pegelonline/`](./integrations/pegelonline/).
 - Weather observation data from our own weather stations in [`./integrations/sgc-weather/`](./integrations/sgc-weather/).
