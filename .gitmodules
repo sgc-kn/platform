@@ -26,5 +26,5 @@
 	path = integrations/ecocounter/nodered
 	url = https://github.com/sgc-kn/nr-flows-ecocounter.git
 [submodule "integrations/marktstammregister/nodered"]
-	path = integrations/marktstammregister/nodered
+	path = integrations/mastr/nodered
 	url = https://github.com/pkel/nr-flows-mastr.git
