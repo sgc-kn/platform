@@ -1,4 +1,4 @@
-# platform: load=true
+# platform: load=false
 
 from utils.jobs import job, run_notebook
 
