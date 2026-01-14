@@ -39,15 +39,6 @@ CREATE TABLE postgrest_dwd.raw_climate_annual_kl_geo (
   "Von_Datum"    timestamp,
   "Bis_Datum"    timestamp,
   "Stationsname"    text);
-DROP TABLE IF EXISTS postgrest_dwd.raw_climate_annual_kl_missing_values CASCADE;
-CREATE TABLE postgrest_dwd.raw_climate_annual_kl_missing_values (
-  "Stations_ID"    smallint,
-  "Stations_Name"    text,
-  "Parameter"    text,
-  "Von_Datum"    timestamp,
-  "Bis_Datum"    timestamp,
-  "Anzahl_Fehlwerte"    bigint,
-  "Beschreibung"    double precision);
 DROP TABLE IF EXISTS postgrest_dwd.raw_climate_annual_kl_product CASCADE;
 CREATE TABLE postgrest_dwd.raw_climate_annual_kl_product (
   "STATIONS_ID"    smallint,
@@ -167,6 +158,15 @@ CREATE TABLE postgrest_dwd.raw_climate_hourly_air_temperature_geo (
   "Von_Datum"    timestamp,
   "Bis_Datum"    timestamp,
   "Stationsname"    text);
+DROP TABLE IF EXISTS postgrest_dwd.raw_climate_hourly_air_temperature_missing_values CASCADE;
+CREATE TABLE postgrest_dwd.raw_climate_hourly_air_temperature_missing_values (
+  "Stations_ID"    smallint,
+  "Stations_Name"    text,
+  "Parameter"    text,
+  "Von_Datum"    timestamp,
+  "Bis_Datum"    timestamp,
+  "Anzahl_Fehlwerte"    bigint,
+  "Beschreibung"    double precision);
 DROP TABLE IF EXISTS postgrest_dwd.raw_climate_hourly_air_temperature_product CASCADE;
 CREATE TABLE postgrest_dwd.raw_climate_hourly_air_temperature_product (
   "STATIONS_ID"    smallint,
@@ -258,6 +258,15 @@ CREATE TABLE postgrest_dwd.raw_climate_hourly_dew_point_geo (
   "Von_Datum"    timestamp,
   "Bis_Datum"    timestamp,
   "Stationsname"    text);
+DROP TABLE IF EXISTS postgrest_dwd.raw_climate_hourly_dew_point_missing_values CASCADE;
+CREATE TABLE postgrest_dwd.raw_climate_hourly_dew_point_missing_values (
+  "Stations_ID"    smallint,
+  "Stations_Name"    text,
+  "Parameter"    text,
+  "Von_Datum"    timestamp,
+  "Bis_Datum"    timestamp,
+  "Anzahl_Fehlwerte"    bigint,
+  "Beschreibung"    double precision);
 DROP TABLE IF EXISTS postgrest_dwd.raw_climate_hourly_dew_point_product CASCADE;
 CREATE TABLE postgrest_dwd.raw_climate_hourly_dew_point_product (
   "STATIONS_ID"    smallint,
@@ -299,6 +308,15 @@ CREATE TABLE postgrest_dwd.raw_climate_hourly_pressure_geo (
   "Von_Datum"    timestamp,
   "Bis_Datum"    timestamp,
   "Stationsname"    text);
+DROP TABLE IF EXISTS postgrest_dwd.raw_climate_hourly_pressure_missing_values CASCADE;
+CREATE TABLE postgrest_dwd.raw_climate_hourly_pressure_missing_values (
+  "Stations_ID"    smallint,
+  "Stations_Name"    text,
+  "Parameter"    text,
+  "Von_Datum"    timestamp,
+  "Bis_Datum"    timestamp,
+  "Anzahl_Fehlwerte"    bigint,
+  "Beschreibung"    double precision);
 DROP TABLE IF EXISTS postgrest_dwd.raw_climate_hourly_pressure_product CASCADE;
 CREATE TABLE postgrest_dwd.raw_climate_hourly_pressure_product (
   "STATIONS_ID"    smallint,
@@ -340,6 +358,15 @@ CREATE TABLE postgrest_dwd.raw_climate_hourly_soil_temperature_geo (
   "Von_Datum"    timestamp,
   "Bis_Datum"    timestamp,
   "Stationsname"    text);
+DROP TABLE IF EXISTS postgrest_dwd.raw_climate_hourly_soil_temperature_missing_values CASCADE;
+CREATE TABLE postgrest_dwd.raw_climate_hourly_soil_temperature_missing_values (
+  "Stations_ID"    smallint,
+  "Stations_Name"    text,
+  "Parameter"    text,
+  "Von_Datum"    timestamp,
+  "Bis_Datum"    timestamp,
+  "Anzahl_Fehlwerte"    bigint,
+  "Beschreibung"    double precision);
 DROP TABLE IF EXISTS postgrest_dwd.raw_climate_hourly_soil_temperature_product CASCADE;
 CREATE TABLE postgrest_dwd.raw_climate_hourly_soil_temperature_product (
   "STATIONS_ID"    smallint,
@@ -426,6 +453,15 @@ CREATE TABLE postgrest_dwd.raw_climate_hourly_wind_geo (
   "Von_Datum"    timestamp,
   "Bis_Datum"    timestamp,
   "Stationsname"    text);
+DROP TABLE IF EXISTS postgrest_dwd.raw_climate_hourly_wind_missing_values CASCADE;
+CREATE TABLE postgrest_dwd.raw_climate_hourly_wind_missing_values (
+  "Stations_ID"    smallint,
+  "Stations_Name"    text,
+  "Parameter"    text,
+  "Von_Datum"    timestamp,
+  "Bis_Datum"    timestamp,
+  "Anzahl_Fehlwerte"    bigint,
+  "Beschreibung"    double precision);
 DROP TABLE IF EXISTS postgrest_dwd.raw_climate_hourly_wind_product CASCADE;
 CREATE TABLE postgrest_dwd.raw_climate_hourly_wind_product (
   "STATIONS_ID"    smallint,
@@ -467,15 +503,6 @@ CREATE TABLE postgrest_dwd.raw_climate_hourly_precipitation_geo (
   "Von_Datum"    timestamp,
   "Bis_Datum"    timestamp,
   "Stationsname"    text);
-DROP TABLE IF EXISTS postgrest_dwd.raw_climate_hourly_precipitation_missing_values CASCADE;
-CREATE TABLE postgrest_dwd.raw_climate_hourly_precipitation_missing_values (
-  "Stations_ID"    smallint,
-  "Stations_Name"    text,
-  "Parameter"    text,
-  "Von_Datum"    timestamp,
-  "Bis_Datum"    timestamp,
-  "Anzahl_Fehlwerte"    bigint,
-  "Beschreibung"    double precision);
 DROP TABLE IF EXISTS postgrest_dwd.raw_climate_hourly_precipitation_product CASCADE;
 CREATE TABLE postgrest_dwd.raw_climate_hourly_precipitation_product (
   "STATIONS_ID"    smallint,
@@ -604,6 +631,15 @@ CREATE TABLE postgrest_dwd.raw_climate_hourly_extreme_wind_geo (
   "Von_Datum"    timestamp,
   "Bis_Datum"    timestamp,
   "Stationsname"    text);
+DROP TABLE IF EXISTS postgrest_dwd.raw_climate_hourly_extreme_wind_missing_values CASCADE;
+CREATE TABLE postgrest_dwd.raw_climate_hourly_extreme_wind_missing_values (
+  "Stations_ID"    smallint,
+  "Stations_Name"    text,
+  "Parameter"    text,
+  "Von_Datum"    timestamp,
+  "Bis_Datum"    timestamp,
+  "Anzahl_Fehlwerte"    bigint,
+  "Beschreibung"    double precision);
 DROP TABLE IF EXISTS postgrest_dwd.raw_climate_hourly_extreme_wind_product CASCADE;
 CREATE TABLE postgrest_dwd.raw_climate_hourly_extreme_wind_product (
   "STATIONS_ID"    smallint,
@@ -644,6 +680,15 @@ CREATE TABLE postgrest_dwd.raw_climate_hourly_wind_synop_geo (
   "Von_Datum"    timestamp,
   "Bis_Datum"    timestamp,
   "Stationsname"    text);
+DROP TABLE IF EXISTS postgrest_dwd.raw_climate_hourly_wind_synop_missing_values CASCADE;
+CREATE TABLE postgrest_dwd.raw_climate_hourly_wind_synop_missing_values (
+  "Stations_ID"    smallint,
+  "Stations_Name"    text,
+  "Parameter"    text,
+  "Von_Datum"    timestamp,
+  "Bis_Datum"    timestamp,
+  "Anzahl_Fehlwerte"    bigint,
+  "Beschreibung"    double precision);
 DROP TABLE IF EXISTS postgrest_dwd.raw_climate_hourly_wind_synop_product CASCADE;
 CREATE TABLE postgrest_dwd.raw_climate_hourly_wind_synop_product (
   "STATIONS_ID"    smallint,
